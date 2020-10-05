@@ -3,6 +3,7 @@
 extern crate reqwest;
 extern crate serde;
 use serde::Deserialize;
+
 // use std::collections::HashMap;
 
 pub struct Client {
@@ -27,7 +28,7 @@ pub struct BlockFormat {
 #[derive(Deserialize, Debug)]
 pub struct BlockStatus {
     pub in_best_chain: bool,
-    pub next_best : String,
+    pub next_best: String,
     pub height: u32,
 }
 
@@ -78,7 +79,9 @@ pub struct TransactionFormat {
 
 impl Client {
     pub fn new(url: &str) -> Self {
-        Client { url : url.to_string()}
+        Client {
+            url: url.to_string(),
+        }
     }
     // GET /block/:hash
 
@@ -94,10 +97,7 @@ impl Client {
 
     // Returns the block status.
     // Available fields: in_best_chain (boolean, false for orphaned blocks), next_best (the hash of the next block, only available for blocks in the best chain).
-    pub fn get_block_status(
-        &self,
-        hash: &str,
-    ) -> Result<BlockStatus, Box<dyn std::error::Error>> {
+    pub fn get_block_status(&self, hash: &str) -> Result<BlockStatus, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/status");
         let resp: BlockStatus = reqwest::blocking::get(&request_url)?.json()?;
         Ok(resp)
@@ -125,7 +125,7 @@ impl Client {
 
     // Returns a list of all txids in the block.
     // The response from this endpoint can be cached indefinitely.
-    pub fn get_block_txids (&self, hash:&str)->Result<Vec<String>, Box<dyn std::error::Error>> {
+    pub fn get_block_txids(&self, hash: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/txids");
         let resp: Vec<String> = reqwest::blocking::get(&request_url)?.json()?;
         Ok(resp)
@@ -134,70 +134,173 @@ impl Client {
 
     // Returns the transaction at index :index within the specified block.
     // The response from this endpoint can be cached indefinitely.
-    pub fn get_block_txid_at_index (&self,  hash:&str,index:i32)->Result <String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}{}", self.url, "/block/", hash, "/txid/",index.to_string());
+    pub fn get_block_txid_at_index(
+        &self,
+        hash: &str,
+        index: i32,
+    ) -> Result<String, Box<dyn std::error::Error>> {
+        let request_url = format!(
+            "{}{}{}{}{}",
+            self.url,
+            "/block/",
+            hash,
+            "/txid/",
+            index.to_string()
+        );
         let resp: String = reqwest::blocking::get(&request_url)?.text()?;
         Ok(resp.clone())
     }
     // GET /block/:hash/raw
 
     // Returns the raw block representation in binary.
-
     // The response from this endpoint can be cached indefinitely.
+    pub fn get_block_raw_format(&self, hash: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/raw");
+        let resp = reqwest::blocking::get(&request_url)?.bytes()?.to_vec();
+        Ok(resp)
+    }
     // GET /block-height/:height
 
     // Returns the hash of the block currently at height.
+    pub fn get_block_height(&self, height: i32) -> Result<String, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}", self.url, "/block-height/", height);
+        let resp = reqwest::blocking::get(&request_url)?.text()?;
+        Ok(resp)
+    }
     // GET /blocks[/:start_height]
 
     // Returns the 10 newest blocks starting at the tip or at start_height if specified.
+    pub fn get_blocks(&self, start_height: i32) -> Result<Vec<BlockFormat>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}", self.url, "/blocks/", start_height);
+        let resp = reqwest::blocking::get(&request_url)?.json()?;
+        Ok(resp)
+    }
+
     // GET /blocks/tip/height
 
     // Returns the height of the last block.
+    pub fn get_blocks_tip_height(&self) -> Result<i32, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}", self.url, "/blocks/tip/height");
+        let resp = reqwest::blocking::get(&request_url)?.text()?.parse()?;
+        Ok(resp)
+    }
     // GET /blocks/tip/hash
 
     // Returns the hash of the last block.
+    pub fn get_blocks_tip_hash(&self) -> Result<String, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}", self.url, "/blocks/tip/hash");
+        let resp = reqwest::blocking::get(&request_url)?.text()?;
+        Ok(resp)
+    }
 }
-
 
 #[cfg(test)]
 mod test {
     use super::*;
-    static ENDPOINT_URL : &str = "https://blockstream.info/testnet/api/";
-    fn default_client()-> Client{
-       return Client::new(ENDPOINT_URL);
+    static ENDPOINT_URL: &str = "https://blockstream.info/testnet/api/";
+    fn default_client() -> Client {
+        return Client::new(ENDPOINT_URL);
     }
     #[test]
     fn get_block() {
-
         let client = default_client();
-        let response = client.get_block("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
-        assert_eq!(response.unwrap().previousblockhash,"000000000000002b6f0830e1b92c6e59f18d147c0370a3425c91be21e0b1ff85");
+        let response =
+            client.get_block("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
+        assert_eq!(
+            response.unwrap().previousblockhash,
+            "000000000000002b6f0830e1b92c6e59f18d147c0370a3425c91be21e0b1ff85"
+        );
     }
     #[test]
-    fn get_block_status(){
+    fn get_block_status() {
         let client = default_client();
-        let response = client.get_block_status("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
-        assert_eq!(response.unwrap().in_best_chain,true);
+        let response = client
+            .get_block_status("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
+        assert_eq!(response.unwrap().in_best_chain, true);
     }
     #[test]
-    fn get_block_txs_with_and_without_index(){
-        let client= default_client();
-        let first_txs_index = client.get_block_txs("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7", None);
-        let second_txs_index = client.get_block_txs("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7", Some(25));
-        assert_eq!(first_txs_index.unwrap().iter().position(|tx| tx.txid == "bdbaa506c8903918b407fca86bd3498cd7794000b22cddeb1c87c2d9eb8fab62").unwrap(),0);
-        assert_eq!(second_txs_index.unwrap().iter().position(|tx| tx.txid == "a9e7e29b703e667311fb2453e694f17d178822cc2fc4fe4db8cfb8df81898845").unwrap(),0);
+    fn get_block_txs_with_and_without_index() {
+        let client = default_client();
+        let first_txs_index = client.get_block_txs(
+            "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
+            None,
+        );
+        let second_txs_index = client.get_block_txs(
+            "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
+            Some(25),
+        );
+        assert_eq!(
+            first_txs_index
+                .unwrap()
+                .iter()
+                .position(|tx| tx.txid
+                    == "bdbaa506c8903918b407fca86bd3498cd7794000b22cddeb1c87c2d9eb8fab62")
+                .unwrap(),
+            0
+        );
+        assert_eq!(
+            second_txs_index
+                .unwrap()
+                .iter()
+                .position(|tx| tx.txid
+                    == "a9e7e29b703e667311fb2453e694f17d178822cc2fc4fe4db8cfb8df81898845")
+                .unwrap(),
+            0
+        );
     }
     #[test]
-    fn get_block_txids(){
-        let client= default_client();
-        let txids_list = client.get_block_txids("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
-        assert_ne!(txids_list.unwrap().len(),0);
+    fn get_block_txids() {
+        let client = default_client();
+        let txids_list = client
+            .get_block_txids("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
+        assert_ne!(txids_list.unwrap().len(), 0);
     }
     #[test]
-    fn get_block_txid_at_index(){
-        let client= default_client();
-        let txid = client.get_block_txid_at_index("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7", 2);
-        assert_eq!(txid.unwrap(),"4799bfae158a166c76d8ddbb45f3f4da9c5fe06d6b9a3a61867651d51a099df0");
+    fn get_block_txid_at_index() {
+        let client = default_client();
+        let txid = client.get_block_txid_at_index(
+            "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
+            2,
+        );
+        assert_eq!(
+            txid.unwrap(),
+            "4799bfae158a166c76d8ddbb45f3f4da9c5fe06d6b9a3a61867651d51a099df0"
+        );
     }
 
+    #[test]
+    fn get_block_raw_format() {
+        let client = default_client();
+        let response = client.get_block_raw_format(
+            "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
+        );
+        assert_ne!(response.unwrap().iter().count(), 0);
+    }
+    #[test]
+    fn get_block_height() {
+        let client = default_client();
+        let block_hash = client.get_block_height(424242).unwrap();
+        let block = client.get_block(&block_hash);
+        assert_eq!(block.unwrap().height, 424242);
+    }
+    #[test]
+    fn get_blocks() {
+        let client = default_client();
+        let blocks = client.get_blocks(1234).unwrap();
+        assert_eq!(blocks.iter().count(),10);
+    }
+    #[test]
+    fn get_blocks_tip_height() {
+        let client = default_client();
+        let height = client.get_blocks_tip_height().unwrap();
+ 
+        assert_eq!(height>10,true);
+    }
+    #[test]
+    fn get_blocks_tip_hash() {
+        let client = default_client();
+        let hash = client.get_blocks_tip_hash().unwrap();
+ 
+        assert_eq!(hash.len(),64);
+    }
 }
