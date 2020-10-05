@@ -170,7 +170,10 @@ impl Client {
     // GET /blocks[/:start_height]
 
     // Returns the 10 newest blocks starting at the tip or at start_height if specified.
-    pub fn get_blocks(&self, start_height: i32) -> Result<Vec<BlockFormat>, Box<dyn std::error::Error>> {
+    pub fn get_blocks(
+        &self,
+        start_height: i32,
+    ) -> Result<Vec<BlockFormat>, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}", self.url, "/blocks/", start_height);
         let resp = reqwest::blocking::get(&request_url)?.json()?;
         Ok(resp)
@@ -277,6 +280,7 @@ mod test {
         assert_ne!(response.unwrap().iter().count(), 0);
     }
     #[test]
+
     fn get_block_height() {
         let client = default_client();
         let block_hash = client.get_block_height(424242).unwrap();
@@ -284,23 +288,26 @@ mod test {
         assert_eq!(block.unwrap().height, 424242);
     }
     #[test]
+    // Return 10 blocks from start_height
     fn get_blocks() {
         let client = default_client();
         let blocks = client.get_blocks(1234).unwrap();
-        assert_eq!(blocks.iter().count(),10);
+        assert_eq!(blocks.iter().count(), 10);
     }
     #[test]
+    // Function need return last block height
     fn get_blocks_tip_height() {
         let client = default_client();
         let height = client.get_blocks_tip_height().unwrap();
- 
-        assert_eq!(height>10,true);
+
+        assert_eq!(height > 1838109, true);
     }
     #[test]
+    // Verify function return hash
     fn get_blocks_tip_hash() {
         let client = default_client();
         let hash = client.get_blocks_tip_hash().unwrap();
- 
-        assert_eq!(hash.len(),64);
+
+        assert_eq!(hash.len(), 64);
     }
 }
