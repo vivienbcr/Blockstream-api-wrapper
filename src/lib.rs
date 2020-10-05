@@ -124,13 +124,21 @@ impl Client {
     // GET /block/:hash/txids
 
     // Returns a list of all txids in the block.
-
     // The response from this endpoint can be cached indefinitely.
+    pub fn get_block_txids (&self, hash:&str)->Result<Vec<String>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/txids");
+        let resp: Vec<String> = reqwest::blocking::get(&request_url)?.json()?;
+        Ok(resp)
+    }
     // GET /block/:hash/txid/:index
 
     // Returns the transaction at index :index within the specified block.
-
     // The response from this endpoint can be cached indefinitely.
+    pub fn get_block_txid_at_index (&self,  hash:&str,index:i32)->Result <String, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}{}", self.url, "/block/", hash, "/txid/",index.to_string());
+        let resp: String = reqwest::blocking::get(&request_url)?.text()?;
+        Ok(resp.clone())
+    }
     // GET /block/:hash/raw
 
     // Returns the raw block representation in binary.
@@ -159,14 +167,14 @@ mod test {
        return Client::new(ENDPOINT_URL);
     }
     #[test]
-    fn test_get_block() {
+    fn get_block() {
 
         let client = default_client();
         let response = client.get_block("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
         assert_eq!(response.unwrap().previousblockhash,"000000000000002b6f0830e1b92c6e59f18d147c0370a3425c91be21e0b1ff85");
     }
     #[test]
-    fn test_get_block_status(){
+    fn get_block_status(){
         let client = default_client();
         let response = client.get_block_status("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
         assert_eq!(response.unwrap().in_best_chain,true);
@@ -179,5 +187,17 @@ mod test {
         assert_eq!(first_txs_index.unwrap().iter().position(|tx| tx.txid == "bdbaa506c8903918b407fca86bd3498cd7794000b22cddeb1c87c2d9eb8fab62").unwrap(),0);
         assert_eq!(second_txs_index.unwrap().iter().position(|tx| tx.txid == "a9e7e29b703e667311fb2453e694f17d178822cc2fc4fe4db8cfb8df81898845").unwrap(),0);
     }
-    
+    #[test]
+    fn get_block_txids(){
+        let client= default_client();
+        let txids_list = client.get_block_txids("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
+        assert_ne!(txids_list.unwrap().len(),0);
+    }
+    #[test]
+    fn get_block_txid_at_index(){
+        let client= default_client();
+        let txid = client.get_block_txid_at_index("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7", 2);
+        assert_eq!(txid.unwrap(),"4799bfae158a166c76d8ddbb45f3f4da9c5fe06d6b9a3a61867651d51a099df0");
+    }
+
 }
