@@ -3,12 +3,11 @@
 extern crate reqwest;
 extern crate serde;
 use serde::Deserialize;
+mod rqw_client;
+use rqw_client::Client;
 
 // use std::collections::HashMap;
 
-pub struct Client {
-    pub url: String,
-}
 
 #[derive(Deserialize, Debug)]
 pub struct BlockFormat {
@@ -78,11 +77,6 @@ pub struct TransactionFormat {
 }
 
 impl Client {
-    pub fn new(url: &str) -> Self {
-        Client {
-            url: url.to_string(),
-        }
-    }
     // GET /block/:hash
 
     // Returns information about a block.
