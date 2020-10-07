@@ -1,13 +1,50 @@
 // use bitcoin::hash_types::BlockHash;
 // use bitcoin::{Block, BlockHeader};
 extern crate reqwest;
-extern crate serde;
+pub use serde;
 use serde::Deserialize;
-mod rqw_client;
-use rqw_client::Client;
+#[derive( Debug)]
+pub struct ApiClient {
+    pub url: String,
+    pub reqwest: reqwest::blocking::Client,
+    
+}
+#[derive( Debug)]
+pub struct ClientOptions{
+    pub headers:Option<HeadersOptions>,
+}
+#[derive( Debug)]
+pub struct HeadersOptions{
+    pub authorization:Option<String>,
+}
+impl ApiClient {
+    pub fn new(url: &str, options: Option<ClientOptions>) -> Self {
+        let mut client_builder = reqwest::blocking::ClientBuilder::new();
+        // Find options
+        match options {
+            // Build headers
+            Some(ClientOptions{headers,..})=>{
+                let mut headers_map = reqwest::header::HeaderMap::new();
+                match headers {
+                    // header::AUTHORIZATION
+                    Some(HeadersOptions{authorization:Some(authorization)})=> {
+                        headers_map.insert(reqwest::header::AUTHORIZATION, reqwest::header::HeaderValue::from_str(&authorization).unwrap());
+                    },
+                    _=>()
+                }
+                client_builder = client_builder.default_headers(headers_map);
+            },
+            None => ()
+        }
+        let build = client_builder.build().unwrap_or(reqwest::blocking::Client::new());
 
-// use std::collections::HashMap;
+        ApiClient {
+            url: url.to_string(),
+            reqwest: build,
 
+        }
+    }
+}
 
 #[derive(Deserialize, Debug)]
 pub struct BlockFormat {
@@ -76,7 +113,7 @@ pub struct TransactionFormat {
     pub status: TxStatusFormat,
 }
 
-impl Client {
+impl ApiClient {
     // GET /block/:hash
 
     // Returns information about a block.
@@ -84,7 +121,7 @@ impl Client {
     // The response from this endpoint can be cached indefinitely.
     pub fn get_block(&self, hash: &str) -> Result<BlockFormat, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}", self.url, "/block/", hash);
-        let resp: BlockFormat = reqwest::blocking::get(&request_url)?.json()?;
+        let resp: BlockFormat = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
     // GET /block/:hash/status
@@ -93,7 +130,7 @@ impl Client {
     // Available fields: in_best_chain (boolean, false for orphaned blocks), next_best (the hash of the next block, only available for blocks in the best chain).
     pub fn get_block_status(&self, hash: &str) -> Result<BlockStatus, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/status");
-        let resp: BlockStatus = reqwest::blocking::get(&request_url)?.json()?;
+        let resp: BlockStatus = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
     // GET /block/:hash/txs[/:start_index]
@@ -112,7 +149,7 @@ impl Client {
             i if i != 0 => request_url.push_str(&format!("/{}", i.to_string())),
             _ => (),
         }
-        let resp: Vec<TransactionFormat> = reqwest::blocking::get(&request_url)?.json()?;
+        let resp: Vec<TransactionFormat> = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
     // GET /block/:hash/txids
@@ -121,7 +158,7 @@ impl Client {
     // The response from this endpoint can be cached indefinitely.
     pub fn get_block_txids(&self, hash: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/txids");
-        let resp: Vec<String> = reqwest::blocking::get(&request_url)?.json()?;
+        let resp: Vec<String> = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
     // GET /block/:hash/txid/:index
@@ -141,7 +178,7 @@ impl Client {
             "/txid/",
             index.to_string()
         );
-        let resp: String = reqwest::blocking::get(&request_url)?.text()?;
+        let resp: String = self.reqwest.get(&request_url).send()?.text()?;
         Ok(resp.clone())
     }
     // GET /block/:hash/raw
@@ -150,7 +187,7 @@ impl Client {
     // The response from this endpoint can be cached indefinitely.
     pub fn get_block_raw_format(&self, hash: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/raw");
-        let resp = reqwest::blocking::get(&request_url)?.bytes()?.to_vec();
+        let resp = self.reqwest.get(&request_url).send()?.bytes()?.to_vec();
         Ok(resp)
     }
     // GET /block-height/:height
@@ -158,7 +195,7 @@ impl Client {
     // Returns the hash of the block currently at height.
     pub fn get_block_height(&self, height: i32) -> Result<String, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}", self.url, "/block-height/", height);
-        let resp = reqwest::blocking::get(&request_url)?.text()?;
+        let resp = self.reqwest.get(&request_url).send()?.text()?;
         Ok(resp)
     }
     // GET /blocks[/:start_height]
@@ -169,7 +206,7 @@ impl Client {
         start_height: i32,
     ) -> Result<Vec<BlockFormat>, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}", self.url, "/blocks/", start_height);
-        let resp = reqwest::blocking::get(&request_url)?.json()?;
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
 
@@ -178,7 +215,7 @@ impl Client {
     // Returns the height of the last block.
     pub fn get_blocks_tip_height(&self) -> Result<i32, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}", self.url, "/blocks/tip/height");
-        let resp = reqwest::blocking::get(&request_url)?.text()?.parse()?;
+        let resp = self.reqwest.get(&request_url).send()?.text()?.parse()?;
         Ok(resp)
     }
     // GET /blocks/tip/hash
@@ -186,7 +223,7 @@ impl Client {
     // Returns the hash of the last block.
     pub fn get_blocks_tip_hash(&self) -> Result<String, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}", self.url, "/blocks/tip/hash");
-        let resp = reqwest::blocking::get(&request_url)?.text()?;
+        let resp = self.reqwest.get(&request_url).send()?.text()?;
         Ok(resp)
     }
 }
@@ -195,8 +232,8 @@ impl Client {
 mod test {
     use super::*;
     static ENDPOINT_URL: &str = "https://blockstream.info/testnet/api/";
-    fn default_client() -> Client {
-        return Client::new(ENDPOINT_URL);
+    fn default_client() -> ApiClient {
+        return ApiClient::new(ENDPOINT_URL,None);
     }
     #[test]
     fn get_block() {
