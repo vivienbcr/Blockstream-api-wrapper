@@ -1,7 +1,9 @@
 // use bitcoin::hash_types::BlockHash;
 // use bitcoin::{Block, BlockHeader};
+
 extern crate reqwest;
 pub use serde;
+use std::collections::HashMap;
 use serde::Deserialize;
 #[derive(Debug)]
 pub struct ApiClient {
@@ -109,6 +111,13 @@ pub struct TxStatusFormat {
     block_time: u32,
 }
 #[derive(Deserialize, Debug)]
+pub struct UtxoFormat {
+    txid : String,
+    vout : u16,
+    status:TxStatusFormat,
+    value: u32
+}
+#[derive(Deserialize, Debug)]
 pub struct TransactionFormat {
     pub txid: String,
     pub version: u32,
@@ -148,6 +157,20 @@ pub struct ChainMempoolStats {
     pub spent_txo_count: i32,
     pub spent_txo_sum: i32,
     pub tx_count: i32
+}
+#[derive(Deserialize, Debug)]
+pub struct MemPoolFormat{
+    pub count: u32,
+    pub vsize: u32,
+    pub total_fee:u32,
+    pub fee_histogram: Vec<Vec<f32>>
+}
+#[derive(Deserialize, Debug)]
+pub struct MempoolTxFormat{
+    pub txid: String,
+    pub fee:u32,
+    pub vsize:u32,
+    pub value:u32,
 }
 
 impl ApiClient {
@@ -474,11 +497,102 @@ impl ApiClient {
     // Available fields: txid, vout, value and status (with the status of the funding tx).
 
     // Elements-based chains have a valuecommitment field that may appear in place of value, plus the following additional fields: asset/assetcommitment, nonce/noncecommitment, surjection_proof and range_proof.
+    pub fn get_address_utxo(
+        &self,
+        address: &str,
+    ) -> Result<Vec<UtxoFormat>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/address/", address,"/utxo");
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
+    pub fn get_script_hash_utxo(
+        &self,
+        scripthash: &str,
+    ) -> Result<Vec<UtxoFormat>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/scripthash/", scripthash,"/utxo");
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
+    
+    
     // GET /address-prefix/:prefix
 
+    // This feature is disabled by default on custom api
     // Search for addresses beginning with :prefix.
-
     // Returns a JSON array with up to 10 results.
+    pub fn get_address_prefix(
+        &self,
+        prefix: &str,
+    ) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}", self.url, "/address-prefix/", prefix);
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
+//     GET /mempool
+
+// Get mempool backlog statistics. Returns an object with:
+//     count: the number of transactions in the mempool
+//     vsize: the total size of mempool transactions in virtual bytes
+//     total_fee: the total fee paid by mempool transactions in satoshis
+//     fee_histogram: mempool fee-rate distribution histogram
+//     An array of (feerate, vsize) tuples, where each entry's vsize is the total vsize of transactions paying more than feerate but less than the previous entry's feerate (except for the first entry, which has no upper bound). This matches the format used by the Electrum RPC protocol for mempool.get_fee_histogram.
+
+// Example output:
+
+// {
+//   "count": 8134,
+//   "vsize": 3444604,
+//   "total_fee":29204625,
+//   "fee_histogram": [[53.01, 102131], [38.56, 110990], [34.12, 138976], [24.34, 112619], [3.16, 246346], [2.92, 239701], [1.1, 775272]]
+// }
+
+//     In this example, there are transactions weighting a total of 102,131 vbytes that are paying more than 53 sat/vB, 110,990 vbytes of transactions paying between 38 and 53 sat/vB, 138,976 vbytes paying between 34 and 38, etc.
+pub fn get_mempool(
+    &self
+) -> Result<MemPoolFormat, Box<dyn std::error::Error>> {
+    let request_url = format!("{}{}", self.url, "/mempool");
+    let resp = self.reqwest.get(&request_url).send()?.json()?;
+    Ok(resp)
+}
+// GET /mempool/txids
+
+// Get the full list of txids in the mempool as an array.
+// The order of the txids is arbitrary and does not match bitcoind's.
+pub fn get_mempool_txids(
+    &self
+) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    let request_url = format!("{}{}", self.url, "/mempool/txids");
+    let resp = self.reqwest.get(&request_url).send()?.json()?;
+    Ok(resp)
+}
+
+// GET /mempool/recent
+
+// Get a list of the last 10 transactions to enter the mempool.
+
+// Each transaction object contains simplified overview data, with the following fields: txid, fee, vsize and value
+// Fee estimates
+pub fn get_mempool_recent(
+    &self
+) -> Result<Vec<MempoolTxFormat>, Box<dyn std::error::Error>> {
+    let request_url = format!("{}{}", self.url, "/mempool/recent");
+    let resp = self.reqwest.get(&request_url).send()?.json()?;
+    Ok(resp)
+}
+// GET /fee-estimates
+
+// Get an object where the key is the confirmation target (in number of blocks) and the value is the estimated feerate (in sat/vB).
+
+// The available confirmation targets are 1-25, 144, 504 and 1008 blocks.
+
+// For example: { "1": 87.882, "2": 87.882, "3": 87.882, "4": 87.882, "5": 81.129, "6": 68.285, ..., "144": 1.027, "504": 1.027, "1008": 1.027 }
+pub fn fee_estimate(
+    &self
+) -> Result<HashMap<String,f32>, Box<dyn std::error::Error>> {
+    let request_url = format!("{}{}", self.url, "/fee-estimates");
+    let resp = self.reqwest.get(&request_url).send()?.json()?;
+    Ok(resp)
+}
 }
 
 #[cfg(test)]
@@ -723,5 +837,47 @@ mod test {
         let tx_list = client.get_script_hash_txs_mempool("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
         assert_eq!(tx_list.iter().count() == 0, true)
     }
-
+    #[test]
+    fn get_address_utxo() {
+        let client = default_client();
+        let utxo = client.get_address_utxo("2NDcM3CGUTwqFL7y8BSBJTYJ9kToeXawkUF").unwrap();
+        assert_eq!(utxo.iter().count() > 0, true)
+    }
+    #[test]
+    fn get_script_hash_utxo() {
+        let client = default_client();
+        let utxo = client.get_script_hash_utxo("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
+        assert_eq!(utxo.iter().count() == 0, true)
+    }
+    #[test]
+    fn get_address_prefix() {
+        let client = default_client();
+        let addresses = client.get_address_prefix("2NDcM").unwrap();
+        assert_eq!(addresses.iter().count() == 10, true)
+    }
+    // fee_estimate(get_mempool_recent(get_mempool_txids(get_mempool
+        #[test]
+        fn get_mempool() {
+            let client = default_client();
+            let mempool = client.get_mempool().unwrap();
+            assert_eq!(mempool.count > 1, true)
+        }
+        #[test]
+        fn get_mempool_txids() {
+            let client = default_client();
+            let mempool_txids = client.get_mempool_txids().unwrap();
+            assert_eq!(mempool_txids.iter().count() > 1, true)
+        }
+        #[test]
+        fn get_mempool_recent() {
+            let client = default_client();
+            let mempool_txids = client.get_mempool_recent().unwrap();
+            assert_eq!(mempool_txids.iter().count() > 1, true)
+        }
+        #[test]
+        fn fee_estimate() {
+            let client = default_client();
+            let fee = client.fee_estimate().unwrap();
+            assert_ne!(fee.is_empty() , true)
+        }
 }

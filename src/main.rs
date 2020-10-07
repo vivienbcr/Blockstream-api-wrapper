@@ -16,8 +16,9 @@ use serde::Deserialize;
     // println!("{:?}",blocktx.unwrap());
     // let blocktx = client.get_block_raw_format("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
     // println!("{:?}",blocktx.unwrap());
-    let blocktx = client.get_blocks_tip_height();
-    let outpends = client.get_tx_outspends("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316").unwrap();
-    let ooo = client.get_address_txs_chain("n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",Some("bf1454b31bc132622d989a1497d8e7344007b8376443a95b2733fd04afd9f8a3")).unwrap();
-    println!("{:?}",ooo.iter().count());
+    // let blocktx = client.get_blocks_tip_height();
+    // let outpends = client.get_tx_outspends("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316").unwrap();
+    // let ooo = client.get_address_txs_chain("n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",Some("bf1454b31bc132622d989a1497d8e7344007b8376443a95b2733fd04afd9f8a3")).unwrap();
+    let mem = client.get_mempool_recent().unwrap();
+    println!("{:?}",mem);
 }
