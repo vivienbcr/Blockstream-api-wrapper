@@ -1,4 +1,5 @@
 extern crate reqwest;
+
 mod lib;
 pub use serde;
 use serde::Deserialize;
