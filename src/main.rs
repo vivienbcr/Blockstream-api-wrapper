@@ -4,7 +4,7 @@ pub use serde;
 use serde::Deserialize;
 // use futures::executor;
  fn main() {
-   let client = lib::ApiClient::new("https://elc-t.zqsd.io",Some(lib::ClientOptions{headers:Some(lib::HeadersOptions{authorization:Some("okfo".to_string())})}));
+   let client = lib::ApiClient::new("https://elc-t.zqsd.io",Some(lib::ClientOptions{headers:Some(lib::HeadersOptions{authorization:Some("okfo".to_string())})})).unwrap();
     // let blockjson = client.get_block("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
     // println!("{:?}",blockjson);
     // let get_block_status = client.get_block_status("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
