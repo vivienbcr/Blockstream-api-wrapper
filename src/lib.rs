@@ -104,8 +104,8 @@ pub struct VinFormat {
 #[derive(Deserialize, Debug)]
 pub struct TxStatusFormat {
     confirmed: bool,
-    block_height: u32,
-    block_hash: String,
+    block_height: Option<u32>,
+    block_hash: Option<String>,
     block_time: u32,
 }
 #[derive(Deserialize, Debug)]
@@ -120,6 +120,20 @@ pub struct TransactionFormat {
     pub vout: Vec<VoutFormat>,
     pub status: TxStatusFormat,
 }
+#[derive(Deserialize, Debug)]
+pub struct MerkleProofFormat {
+    block_height: u32,
+    merkle: Vec<String>,
+    pos: u32,
+}
+#[derive(Deserialize, Debug)]
+pub struct OutspentFormat {
+    pub spent: bool,
+    pub txid: Option<String>,
+    pub vin: Option<u32>,
+    pub status: Option<TxStatusFormat>
+}
+
 
 impl ApiClient {
     // GET /block/:hash
@@ -234,6 +248,90 @@ impl ApiClient {
         let resp = self.reqwest.get(&request_url).send()?.text()?;
         Ok(resp)
     }
+    // GET /tx/:txid
+
+    // Returns information about the transaction.
+    // Available fields: txid, version, locktime, size, weight, fee, vin, vout and status (see transaction format for details).
+    pub fn get_tx(&self,txid : &str)->Result<TransactionFormat, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}", self.url, "/tx/", txid);
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
+    //     GET /tx/:txid/status
+
+    // Returns the transaction confirmation status.
+    // Available fields: confirmed (boolean), block_height (optional) and block_hash (optional).
+    pub fn get_tx_status(&self,txid : &str)->Result<TxStatusFormat, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/status");
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
+    // GET /tx/:txid/hex
+    // GET /tx/:txid/raw
+
+    // Returns the raw transaction in hex or as binary data.
+    pub fn get_tx_raw(&self,txid : &str)-> Result<Vec<u8>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/raw");
+        let resp = self.reqwest.get(&request_url).send()?.bytes()?.to_vec();
+        Ok(resp)
+    }
+    pub fn get_tx_hex(&self,txid : &str)-> Result<String, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/raw");
+        let resp = self.reqwest.get(&request_url).send()?.text()?;
+        Ok(resp)
+    }
+
+    // GET /tx/:txid/merkleblock-proof 
+
+    // Returns a merkle inclusion proof for the transaction using bitcoind's merkleblock format.
+
+    // Note: This endpoint is not currently available for Liquid/Elements-based chains.    
+    pub fn get_tx_merkleblock_proof(&self,txid : &str)-> Result<String, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/merkleblock-proof");
+        let resp = self.reqwest.get(&request_url).send()?.text()?;
+        Ok(resp)
+    }
+    // GET /tx/:txid/merkle-proof
+
+    // Returns a merkle inclusion proof for the transaction using Electrum's blockchain.transaction.get_merkle format.
+    pub fn get_tx_merkle_proof(&self,txid : &str)-> Result<MerkleProofFormat, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/merkle-proof");
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
+    // GET /tx/:txid/outspend/:vout
+
+    // Returns the spending status of a transaction output.
+
+    // Available fields: spent (boolean), txid (optional), vin (optional) and status (optional, the status of the spending tx).
+    pub fn get_tx_outspend(&self,txid : &str, vout : Option<i32>)-> Result<OutspentFormat, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}{}", self.url, "/tx/", txid,"/outspend/",vout.unwrap().to_string());
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
+    // GET /tx/:txid/outspends
+
+    // Returns the spending status of all transaction outputs.
+    pub fn get_tx_outspends(&self,txid : &str)-> Result<Vec<OutspentFormat>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid,"/outspends");
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
+
+    // POST /tx
+
+    // Broadcast a raw transaction to the network.
+
+    // The transaction should be provided as hex in the request body. The txid will be returned on success.
+        // GET /tx/:txid/outspends
+
+    // Returns the spending status of all transaction outputs.
+    pub fn post_tx(&self,hex_transaction : &str)-> Result<String, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}", self.url, "/tx");
+        let resp = self.reqwest.post(&request_url).body(hex_transaction.to_string()).send()?.text()?;
+        Ok(resp)
+    }
+
 }
 
 #[cfg(test)]
@@ -315,8 +413,8 @@ mod test {
         let client = default_client();
         let response = client.get_block_raw_format(
             "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
-        );
-        assert_ne!(response.unwrap().iter().count(), 0);
+        ).unwrap();
+        assert_ne!(response.iter().count(), 0);
     }
     #[test]
 
@@ -349,4 +447,63 @@ mod test {
 
         assert_eq!(hash.len(), 64);
     }
+    #[test]
+    // Check tx version
+    fn get_tx() {
+        let client = default_client();
+        let tx = client.get_tx("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
+        assert_eq!(tx.version, 1);
+    }
+    #[test]
+    // Tx status is confirmed
+    fn get_tx_status() {
+        let client = default_client();
+        let tx_status = client.get_tx_status("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
+        assert_eq!(tx_status.confirmed, true);
+    }
+    #[test]
+    // Tx raw
+    fn get_tx_raw() {
+        let client = default_client();
+        let tx_raw = client.get_tx_raw("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
+        assert_ne!(tx_raw.iter().count(), 0);
+    }
+    #[test]
+    // Tx hex
+    fn get_tx_hex() {
+        let client = default_client();
+        let tx_hex = client.get_tx_hex("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
+        assert_eq!(tx_hex.len()>1, true);
+    }
+    #[test]
+    fn get_tx_merkleblock_proof() {
+        let client = default_client();
+        let tx_hex = client.get_tx_merkleblock_proof("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
+        assert_eq!(tx_hex.len()>1, true);
+    }
+    #[test]
+    fn get_tx_merkle_proof() {
+        let client = default_client();
+        let merkle_proof = client.get_tx_merkle_proof("6814c0b3915a8de663851b9887e0cce7d0d6c6b3f7c28b97ba8a643b72e1b7c3").unwrap();
+        assert_eq!(merkle_proof.merkle.iter().count(), 6);
+    }
+    #[test]
+    fn get_tx_outspend() {
+        let client = default_client();
+        let outspend = client.get_tx_outspend("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316",Some(1)).unwrap();
+        assert_eq!(outspend.spent, true);
+    }
+    #[test]
+    fn get_tx_outspends() {
+        let client = default_client();
+        let outpends = client.get_tx_outspends("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316").unwrap();
+        assert_eq!(outpends.iter().count(),3);
+    }
+    #[test]
+    fn post_tx(){
+        let client = default_client();
+        let resp = client.post_tx("010000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff2003220d1c04d6d37c5f0877fffb9a4b3500000d2f6e6f64655374726174756d2f00000000030000000000000000266a24aa21a9ed61dc942663feda48033d1026d2fa8acf0f098870202c541bffa7771e8dc51e159b0e2801000000001976a914dfdf4d53296fac595dc33d8ac7216ba516b8dcc588ac8ffd0200000000001976a914bfcc245931cbad63d09f62df43bcab989991014e88ac0120000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+        assert_eq!(resp.contains("Transaction already in block chain"),true)
+    }
+
 }

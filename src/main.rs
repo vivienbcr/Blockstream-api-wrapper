@@ -16,5 +16,7 @@ use serde::Deserialize;
     // let blocktx = client.get_block_raw_format("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7");
     // println!("{:?}",blocktx.unwrap());
     let blocktx = client.get_blocks_tip_height();
-    println!("{:?}",blocktx);
+    let outpends = client.get_tx_outspends("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316").unwrap();
+    
+    println!("{:?}",outpends);
 }
