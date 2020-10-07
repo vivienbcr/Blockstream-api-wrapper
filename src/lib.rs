@@ -411,7 +411,6 @@ impl ApiClient {
         let request_url = format!("{}{}{}{}", self.url, "/scripthash/", scripthash,"/txs");
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
-        // Ok(self.reqwest.get(&format!("{}{}{}{}", self.url, "/scripthash/", scripthash,"/txs")).send()?.json()?)
     }
     
     // GET /address/:address/txs/chain[/:last_seen_txid]
@@ -451,6 +450,22 @@ impl ApiClient {
     // Get unconfirmed transaction history for the specified address/scripthash.
 
     // Returns up to 50 transactions (no paging).
+    pub fn get_address_txs_mempool(
+        &self,
+        address: &str,
+    ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/address/", address,"/txs/mempool");
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
+    pub fn get_script_hash_txs_mempool(
+        &self,
+        scripthash: &str,
+    ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
+        let request_url = format!("{}{}{}{}", self.url, "/scripthash/", scripthash,"/txs/mempool");
+        let resp = self.reqwest.get(&request_url).send()?.json()?;
+        Ok(resp)
+    }
     // GET /address/:address/utxo
     // GET /scripthash/:hash/utxo
 
@@ -551,7 +566,6 @@ mod test {
         assert_ne!(response.iter().count(), 0);
     }
     #[test]
-
     fn get_block_height() {
         let client = default_client();
         let block_hash = client.get_block_height(424242).unwrap();
@@ -684,7 +698,30 @@ mod test {
         let tx_list = client.get_script_hash_txs("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
         assert_eq!(tx_list.iter().count() > 0, false)
     }
-    
-
+    #[test]
+    fn get_address_txs_chain() {
+        let client = default_client();
+        let tx_list = client.get_address_txs_chain("n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",Some("d0075b62f8b3e464472b8edecf56083ca3e9e8424f5f332ed2f9045d7fcccddc")).unwrap();
+        let tx_list_from_index = client.get_address_txs_chain("n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",Some(&tx_list[1].txid)).unwrap();
+        assert_eq!(tx_list[2].txid  == tx_list_from_index[0].txid, true)
+    }
+    #[test]
+    fn get_script_hash_txs_chain() {
+        let client = default_client();
+        let tx_list = client.get_script_hash_txs_chain("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",None).unwrap();
+        assert_eq!(tx_list.iter().count() > 0, false)
+    }
+    #[test]
+    fn get_address_txs_mempool() {
+        let client = default_client();
+        let tx_list = client.get_address_txs_mempool("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").unwrap();
+        assert_eq!(tx_list.iter().count() == 0, true)
+    }
+    #[test]
+    fn get_script_hash_txs_mempool() {
+        let client = default_client();
+        let tx_list = client.get_script_hash_txs_mempool("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
+        assert_eq!(tx_list.iter().count() == 0, true)
+    }
 
 }
