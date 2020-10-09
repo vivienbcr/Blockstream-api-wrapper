@@ -1,11 +1,18 @@
 [package]
-name = "electrs-wrapper"
+name = "blockstream-api-wrapper"
 version = "0.1.0"
-authors = ["Vivienbcr <vivien.boucher@outlook.com>"]
+authors = ["Vivienbcr <vivienbcr@protonmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reqwest = { version = "0.10", features = ["blocking", "json"] }
+reqwest = {version = "0.10", default-features = true, optional = true, features=["json"]  }
 serde = { version = "1.0.116", features = ["derive"] }
+
+[dev-dependencies]
+tokio-test = "0.2.1"
+
+[features]
+default = [ "reqwest" , "reqwest/default"]
+blocking = ["reqwest" , "reqwest/blocking"]
