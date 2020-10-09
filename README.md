@@ -2,7 +2,7 @@
 
 ## Description
 
-This crate allow you to call Blockstream API or self hosted API easily.
+This library provide wrapper to use Blockstream API or self hosted [Esplora - Electrs API](https://github.com/Blockstream/electrs).
 Blockstream explorer API is based on Electrs API. You can run self hosted version of Electrs on you own server for specific usage or / and to improve your privacy.
 
 ## Requirements
@@ -17,20 +17,14 @@ sudo apt install libssl-dev
 
 * Web request framework : [Reqwest](https://docs.rs/reqwest/0.10.8/reqwest/)
 
-## TODO Roadmap :
+* Serde : [Bro in the storm](https://crates.io/crates/serde)
 
-[X] Implement block
+## Roadmap
 
-[ ] Implement transactions
+* Upgrade fully customable connection client
 
-[ ] Implement fee-estimates
+* Implement method "as_core" to return bitcoin rust structures for standard usages
 
-[ ] Implement mempool
+* Implement async module and split imports (cf reqwest crate)
 
-[ ] Implement address
-
-[ ] Upgrade fully customable connection client
-
-[ ] Implement method "as_core" to return bitcoin rust structures for standard usages
-
-[ ] Implement async module and split imports
+* Implement Liquid routes
