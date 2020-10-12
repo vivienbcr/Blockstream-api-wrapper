@@ -7,33 +7,27 @@ use crate::data::blockstream::{
 };
 
 impl ApiClient {
-    // GET /block/:hash
-
-    // Returns information about a block.
-    // Available fields: id, height, version, timestamp, bits, nonce, merkle_root, tx_count, size, weight and previousblockhash. Elements-based chains have an additional proof field. See block format for more details.
-    // The response from this endpoint can be cached indefinitely.
-
+    /// get_block (GET /block/:hash) Returns information about a block.
+    /// 
+    /// Available fields: id, height, version, timestamp, bits, nonce, merkle_root, tx_count, size, weight and previousblockhash. Elements-based chains have an additional proof field. See block format for more details.
+    /// The response from this endpoint can be cached indefinitely.
     pub fn get_block(&self, hash: &str) -> Result<BlockFormat, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}", self.url, "/block/", hash);
         let resp: BlockFormat = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
-    // GET /block/:hash/status
-
-    // Returns the block status.
-    // Available fields: in_best_chain (boolean, false for orphaned blocks), next_best (the hash of the next block, only available for blocks in the best chain).
-    #[allow(dead_code)]
+    /// get_block_status (GET /block/:hash/status) Returns the block status.
+    ///
+    /// Available fields: in_best_chain (boolean, false for orphaned blocks), next_best (the hash of the next block, only available for blocks in the best chain).
     pub fn get_block_status(&self, hash: &str) -> Result<BlockStatus, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/status");
         let resp: BlockStatus = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
-    // GET /block/:hash/txs[/:start_index]
-
-    // Returns a list of transactions in the block (up to 25 transactions beginning at start_index).
-    // Transactions returned here do not have the status field, since all the transactions share the same block and confirmation status.
-    // The response from this endpoint can be cached indefinitely.
-    #[allow(dead_code)]
+    /// get_block_txs (GET /block/:hash/txs[/:start_index]) Returns a list of transactions in the block (up to 25 transactions beginning at start_index).
+    ///
+    /// Transactions returned here do not have the status field, since all the transactions share the same block and confirmation status.
+    /// The response from this endpoint can be cached indefinitely.
     pub fn get_block_txs(
         &self,
         hash: &str,
@@ -48,21 +42,17 @@ impl ApiClient {
         let resp: Vec<TransactionFormat> = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
-    // GET /block/:hash/txids
-
-    // Returns a list of all txids in the block.
-    // The response from this endpoint can be cached indefinitely.
-    #[allow(dead_code)]
+    /// get_block_txids (GET /block/:hash/txids) Returns a list of all txids in the block.
+    /// 
+    /// The response from this endpoint can be cached indefinitely.
     pub fn get_block_txids(&self, hash: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/txids");
         let resp: Vec<String> = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
-    // GET /block/:hash/txid/:index
-
-    // Returns the transaction at index :index within the specified block.
-    // The response from this endpoint can be cached indefinitely.
-    #[allow(dead_code)]
+    /// get_block_txid_at_index (GET /block/:hash/txid/:index) Returns the transaction at index :index within the specified block.
+    /// 
+    /// The response from this endpoint can be cached indefinitely.
     pub fn get_block_txid_at_index(
         &self,
         hash: &str,
@@ -79,20 +69,15 @@ impl ApiClient {
         let resp: String = self.reqwest.get(&request_url).send()?.text()?;
         Ok(resp.clone())
     }
-    // GET /block/:hash/raw
-
-    // Returns the raw block representation in binary.
-    // The response from this endpoint can be cached indefinitely.
-    #[allow(dead_code)]
+    /// get_block_raw_format (GET /block/:hash/raw) Returns the raw block representation in binary.
+    ///
+    /// The response from this endpoint can be cached indefinitely.
     pub fn get_block_raw_format(&self, hash: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/raw");
         let resp = self.reqwest.get(&request_url).send()?.bytes()?.to_vec();
         Ok(resp)
     }
-    // GET /block-height/:height
-
-    // Returns the hash of the block currently at height.
-    #[allow(dead_code)]
+    /// get_block_height (GET /block-height/:height)  Returns the hash of the block currently at height.
     pub fn get_block_height(&self, height: i32) -> Result<String, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}{}", self.url, "/block-height/", height);
         let resp = self.reqwest.get(&request_url).send()?.text()?;

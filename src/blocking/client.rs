@@ -1,19 +1,21 @@
-
+/// A custom Reqwest Client with API URL
 #[derive(Debug)]
 pub struct ApiClient {
     pub url: String,
     pub reqwest: reqwest::blocking::Client,
 }
+/// List of option for custom Reqwest usage
 #[derive(Debug)]
 pub struct ClientOptions {
     pub headers: Option<HeadersOptions>,
 }
+/// Headers options can be used to use authorization header
 #[derive(Debug)]
 pub struct HeadersOptions {
     pub authorization: Option<String>,
 }
 impl ApiClient {
-    #[allow(dead_code)]
+    /// Instanciate client from endpoint API URL, and options struct.
     pub fn new(
         url: &str,
         options: Option<ClientOptions>,

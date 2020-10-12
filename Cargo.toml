@@ -1,5 +1,5 @@
 [package]
-name = "blockstream-api-wrapper"
+name = "esplora-api"
 version = "0.1.0"
 authors = ["Vivienbcr <vivienbcr@protonmail.com>"]
 edition = "2018"

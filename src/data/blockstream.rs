@@ -1,3 +1,6 @@
+//! blockstream reference all data structures provided by Blocksteam API.
+//! Official API documentation is available at [Blockstream Esplora API](https://github.com/Blockstream/esplora/blob/master/API.md)
+//! Amounts are always represented in satoshis.
 use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 pub struct BlockFormat {
@@ -22,11 +25,11 @@ pub struct BlockStatus {
 }
 #[derive(Deserialize, Debug)]
 pub struct VoutFormat {
-    scriptpubkey: String,
-    scriptpubkey_asm: String,
-    scriptpubkey_type: String,
-    scriptpubkey_address: Option<String>,
-    value: u32,
+    pub scriptpubkey: String,
+    pub scriptpubkey_asm: String,
+    pub scriptpubkey_type: String,
+    pub scriptpubkey_address: Option<String>,
+    pub value: u32,
 }
 #[derive(Deserialize, Debug)]
 pub struct VinFormat {
@@ -46,17 +49,17 @@ pub struct VinFormat {
 }
 #[derive(Deserialize, Debug)]
 pub struct TxStatusFormat {
-    confirmed: bool,
-    block_height: Option<u32>,
-    block_hash: Option<String>,
-    block_time: u32,
+    pub confirmed: bool,
+    pub block_height: Option<u32>,
+    pub block_hash: Option<String>,
+    pub block_time: u32,
 }
 #[derive(Deserialize, Debug)]
 pub struct UtxoFormat {
-    txid: String,
-    vout: u16,
-    status: TxStatusFormat,
-    value: u32,
+    pub txid: String,
+    pub vout: u16,
+    pub status: TxStatusFormat,
+    pub value: u32,
 }
 #[derive(Deserialize, Debug)]
 pub struct TransactionFormat {
@@ -72,9 +75,9 @@ pub struct TransactionFormat {
 }
 #[derive(Deserialize, Debug)]
 pub struct MerkleProofFormat {
-    block_height: u32,
-    merkle: Vec<String>,
-    pos: u32,
+    pub block_height: u32,
+    pub  merkle: Vec<String>,
+    pub pos: u32,
 }
 #[derive(Deserialize, Debug)]
 pub struct OutspentFormat {
