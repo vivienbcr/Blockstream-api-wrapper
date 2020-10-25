@@ -605,8 +605,10 @@ mod test {
     #[test]
     fn get_address() {
         let client = default_client();
-        let address = client.get_address("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5");
-        assert_eq!(address.is_err(), false)
+        let address_1 = client.get_address("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5");
+        let address_2 = client.get_address("n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk");
+        assert_eq!(address_1.is_err(), false);
+        assert_eq!(address_2.is_err(), false);
     }
     #[test]
     fn get_script_hash() {

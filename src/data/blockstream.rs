@@ -96,9 +96,9 @@ pub struct AddressInfoFormat {
 #[derive(Deserialize, Debug)]
 pub struct ChainMempoolStats {
     pub funded_txo_count: i32,
-    pub funded_txo_sum: i32,
+    pub funded_txo_sum: i64,
     pub spent_txo_count: i32,
-    pub spent_txo_sum: i32,
+    pub spent_txo_sum: i64,
     pub tx_count: i32,
 }
 #[derive(Deserialize, Debug)]
