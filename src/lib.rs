@@ -9,5 +9,4 @@ pub use self::async_impl::{client,reqwests};
 // pub use crate::data::blockstream;
 
 // #[cfg(feature = "blocking")]
-// pub mod data;
-// pub mod blocking;
+pub mod blocking;
