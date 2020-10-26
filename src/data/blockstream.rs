@@ -76,7 +76,7 @@ pub struct TransactionFormat {
 #[derive(Deserialize, Debug)]
 pub struct MerkleProofFormat {
     pub block_height: u32,
-    pub  merkle: Vec<String>,
+    pub merkle: Vec<String>,
     pub pos: u32,
 }
 #[derive(Deserialize, Debug)]

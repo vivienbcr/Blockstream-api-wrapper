@@ -13,11 +13,11 @@ impl ApiClient {
     ///
     /// Elements-based chains have an additional proof field. See block format for more details.
     /// The response from this endpoint can be cached indefinitely.
-    /// 
+    ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -38,7 +38,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -58,11 +58,11 @@ impl ApiClient {
     ///
     /// Transactions returned here do not have the status field, since all the transactions share the same block and confirmation status.
     /// The response from this endpoint can be cached indefinitely.
-    /// 
+    ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -94,7 +94,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -117,7 +117,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -151,7 +151,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -173,7 +173,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -194,7 +194,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -219,7 +219,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -243,7 +243,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -265,7 +265,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -287,7 +287,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -309,7 +309,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -326,12 +326,12 @@ impl ApiClient {
     }
     /// get_tx_hex Returns the raw transaction in hex
     ///
-    /// Route : GET /tx/:txid/hex 
+    /// Route : GET /tx/:txid/hex
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -353,7 +353,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -372,13 +372,13 @@ impl ApiClient {
         Ok(resp)
     }
     /// get_tx_merkle_proof Returns a merkle inclusion proof for the transaction using Electrum's blockchain.transaction.get_merkle format.
-    /// 
+    ///
     /// Route : GET /tx/:txid/merkle-proof
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -398,13 +398,13 @@ impl ApiClient {
     }
     /// get_tx_outspend Returns the spending status of a transaction output.
     /// Available fields: spent (boolean), txid (optional), vin (optional) and status (optional, the status of the spending tx).
-    /// 
+    ///
     /// Route : GET /tx/:txid/outspend/:vout
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -433,11 +433,11 @@ impl ApiClient {
     /// get_tx_outspends Returns the spending status of all transaction outputs.
     ///
     /// Route : GET /tx/:txid/outspends
-    /// 
+    ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -457,7 +457,7 @@ impl ApiClient {
     }
     /// post_tx Broadcast a raw transaction to the network.
     /// The transaction should be provided as hex in the request body. The txid will be returned on success.
-    /// 
+    ///
     /// Route : POST /tx
     ///
     #[allow(dead_code)]
@@ -475,13 +475,13 @@ impl ApiClient {
     /// Available fields: address/scripthash, chain_stats and mempool_stats.
     /// {chain,mempool}_stats each contain an object with tx_count, funded_txo_count, funded_txo_sum, spent_txo_count and spent_txo_sum.
     /// Elements-based chains don't have the {funded,spent}_txo_sum fields.
-    /// 
+    ///
     /// Route : GET /address/:address
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -503,13 +503,13 @@ impl ApiClient {
     /// Available fields: scripthash, chain_stats and mempool_stats.
     /// {chain,mempool}_stats each contain an object with tx_count, funded_txo_count, funded_txo_sum, spent_txo_count and spent_txo_sum.
     /// Elements-based chains don't have the {funded,spent}_txo_sum fields.
-    /// 
+    ///
     /// Route : GET /scripthash/:hash
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -529,13 +529,13 @@ impl ApiClient {
     }
     /// get_address_txs Get transaction history for the specified address/scripthash, sorted with newest first.
     /// Returns up to 50 mempool transactions plus the first 25 confirmed transactions. You can request more confirmed transactions using :last_seen_txid(see below).
-    /// 
+    ///
     /// Route : GET /address/:address/txs
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -555,13 +555,13 @@ impl ApiClient {
     }
     /// get_script_hash_txs Get transaction history for the specified address/scripthash, sorted with newest first.
     /// Returns up to 50 mempool transactions plus the first 25 confirmed transactions. You can request more confirmed transactions using :last_seen_txid(see below).
-    /// 
+    ///
     /// Route : GET /scripthash/:hash/txs
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -581,13 +581,13 @@ impl ApiClient {
     }
     /// get_address_txs_chain Get confirmed transaction history for the specified address/scripthash, sorted with newest first.
     /// Returns 25 transactions per page. More can be requested by specifying the last txid seen by the previous query.
-    /// 
+    ///
     /// Route : GET /address/:address/txs/chain[/:last_seen_txid]
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -612,13 +612,13 @@ impl ApiClient {
     }
     /// get_script_hash_txs_chain Get confirmed transaction history for the specified address/scripthash, sorted with newest first.
     /// Returns 25 transactions per page. More can be requested by specifying the last txid seen by the previous query.
-    /// 
+    ///
     /// Route : GET /scripthash/:hash/txs/chain[/:last_seen_txid]
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -646,13 +646,13 @@ impl ApiClient {
     }
     /// get_address_txs_mempool Get unconfirmed transaction history for the specified address.
     /// Returns up to 50 transactions (no paging).
-    /// 
+    ///
     /// Route : GET /address/:address/txs/mempool
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -672,13 +672,13 @@ impl ApiClient {
     }
     /// get_script_hash_txs_mempool Get unconfirmed transaction history for the specified scripthash.
     /// Returns up to 50 transactions (no paging).
-    /// 
+    ///
     /// Route : GET /scripthash/:hash/txs/mempool
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -702,13 +702,13 @@ impl ApiClient {
     /// get_address_utxo Get the list of unspent transaction outputs associated with the address
     /// Available fields: txid, vout, value and status (with the status of the funding tx).
     /// Elements-based chains have a valuecommitment field that may appear in place of value, plus the following additional fields: asset/assetcommitment, nonce/noncecommitment, surjection_proof and range_proof.
-    /// 
+    ///
     /// Route : GET /address/:address/utxo
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -729,13 +729,13 @@ impl ApiClient {
     /// get_script_hash_utxo Get the list of unspent transaction outputs associated with the address
     /// Available fields: txid, vout, value and status (with the status of the funding tx).
     /// Elements-based chains have a valuecommitment field that may appear in place of value, plus the following additional fields: asset/assetcommitment, nonce/noncecommitment, surjection_proof and range_proof.
-    /// 
+    ///
     /// Route : GET /scripthash/:hash/utxo
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -761,7 +761,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -791,7 +791,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -824,7 +824,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -848,7 +848,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -866,13 +866,13 @@ impl ApiClient {
     /// fee_estimate Get an object where the key is the confirmation target (in number of blocks) and the value is the estimated feerate (in sat/vB).
     /// The available confirmation targets are 1-25, 144, 504 and 1008 blocks.
     /// For example: { "1": 87.882, "2": 87.882, "3": 87.882, "4": 87.882, "5": 81.129, "6": 68.285, ..., "144": 1.027, "504": 1.027, "1008": 1.027 }
-    /// 
+    ///
     /// Route : GET /fee-estimates
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();

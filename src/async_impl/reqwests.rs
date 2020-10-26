@@ -13,11 +13,11 @@ impl ApiClient {
     ///
     /// Elements-based chains have an additional proof field. See block format for more details.
     /// The response from this endpoint can be cached indefinitely.
-    /// 
+    ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -38,7 +38,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -61,11 +61,11 @@ impl ApiClient {
     ///
     /// Transactions returned here do not have the status field, since all the transactions share the same block and confirmation status.
     /// The response from this endpoint can be cached indefinitely.
-    /// 
+    ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -97,7 +97,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -123,7 +123,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -150,7 +150,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -159,12 +159,12 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_block_raw_format(
         &self,
         hash: &str,
     ) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/raw");
+        let request_url = format!("{}/block/{}/raw", self.url, hash);
         let resp = self
             .reqwest
             .get(&request_url)
@@ -183,7 +183,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -196,7 +196,7 @@ impl ApiClient {
         &self,
         height: i32,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/block-height/", height);
+        let request_url = format!("{}/block-height/{}", self.url, height);
         let resp = self.reqwest.get(&request_url).send().await?.text().await?;
         Ok(resp)
     }
@@ -207,7 +207,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -216,12 +216,12 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_blocks(
         &self,
         start_height: i32,
     ) -> Result<Vec<BlockFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/blocks/", start_height);
+        let request_url = format!("{}/blocks/{}", self.url, start_height);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
@@ -232,7 +232,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -241,9 +241,9 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_blocks_tip_height(&self) -> Result<i32, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/blocks/tip/height");
+        let request_url = format!("{}/blocks/tip/height", self.url);
         let resp = self
             .reqwest
             .get(&request_url)
@@ -263,7 +263,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -272,9 +272,9 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_blocks_tip_hash(&self) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/blocks/tip/hash");
+        let request_url = format!("{}/blocks/tip/hash", self.url);
         let resp = self.reqwest.get(&request_url).send().await?.text().await?;
         Ok(resp)
     }
@@ -285,7 +285,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -294,12 +294,12 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_tx(
         &self,
         txid: &str,
     ) -> Result<TransactionFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/tx/", txid);
+        let request_url = format!("{}/tx/{}", self.url, txid);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
@@ -310,7 +310,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -319,15 +319,15 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_tx_status(
         &self,
         txid: &str,
     ) -> Result<TxStatusFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/status");
+        let request_url = format!("{}/tx/{}/status", self.url, txid);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_tx_raw Returns the raw transaction as binary data.
     ///
     /// Route : GET /tx/:txid/raw
@@ -335,7 +335,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -344,9 +344,8 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_tx_raw(&self, txid: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/raw");
+        let request_url = format!("{}/tx/{}/raw", self.url, txid);
         let resp = self
             .reqwest
             .get(&request_url)
@@ -357,14 +356,15 @@ impl ApiClient {
             .to_vec();
         Ok(resp)
     }
+
     /// get_tx_hex Returns the raw transaction in hex
     ///
-    /// Route : GET /tx/:txid/hex 
+    /// Route : GET /tx/:txid/hex
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -373,9 +373,8 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_tx_hex(&self, txid: &str) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/raw");
+        let request_url = format!("{}/tx/{}/raw", self.url, txid);
         let resp = self.reqwest.get(&request_url).send().await?.text().await?;
         Ok(resp)
     }
@@ -386,7 +385,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -395,23 +394,23 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_tx_merkleblock_proof(
         &self,
         txid: &str,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/merkleblock-proof");
+        let request_url = format!("{}/tx/{}/merkleblock-proof", self.url, txid);
         let resp = self.reqwest.get(&request_url).send().await?.text().await?;
         Ok(resp)
     }
+
     /// get_tx_merkle_proof Returns a merkle inclusion proof for the transaction using Electrum's blockchain.transaction.get_merkle format.
-    /// 
+    ///
     /// Route : GET /tx/:txid/merkle-proof
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -420,24 +419,24 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_tx_merkle_proof(
         &self,
         txid: &str,
     ) -> Result<MerkleProofFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/merkle-proof");
+        let request_url = format!("{}/tx/{}/merkle-proof", self.url, txid);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_tx_outspend Returns the spending status of a transaction output.
     /// Available fields: spent (boolean), txid (optional), vin (optional) and status (optional, the status of the spending tx).
-    /// 
+    ///
     /// Route : GET /tx/:txid/outspend/:vout
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -446,31 +445,28 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_tx_outspend(
         &self,
         txid: &str,
         vout: Option<i32>,
     ) -> Result<OutspentFormat, Box<dyn std::error::Error>> {
-        let request_url = format!(
-            "{}{}{}{}{}",
-            self.url,
-            "/tx/",
-            txid,
-            "/outspend/",
-            vout.unwrap().to_string()
-        );
+        let request_url = if let Some(vout_idx) = vout {
+            format!("{}/tx/{}/outspend/{}", self.url, txid, vout_idx)
+        } else {
+            format!("{}/tx/{}/outspend", self.url, txid) // FIXME: not sure if this exist
+        };
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_tx_outspends Returns the spending status of all transaction outputs.
     ///
     /// Route : GET /tx/:txid/outspends
-    /// 
+    ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -479,26 +475,26 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_tx_outspends(
         &self,
         txid: &str,
     ) -> Result<Vec<OutspentFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/outspends");
+        let request_url = format!("{}/tx/{}/outspends", self.url, txid);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// post_tx Broadcast a raw transaction to the network.
     /// The transaction should be provided as hex in the request body. The txid will be returned on success.
-    /// 
+    ///
     /// Route : POST /tx
     ///
-    #[allow(dead_code)]
     pub async fn post_tx(
         &self,
         hex_transaction: &str,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/tx");
+        let request_url = format!("{}/tx", self.url);
         let resp = self
             .reqwest
             .post(&request_url)
@@ -509,17 +505,18 @@ impl ApiClient {
             .await?;
         Ok(resp)
     }
+
     /// get_address Get information about an address
     /// Available fields: address/scripthash, chain_stats and mempool_stats.
     /// {chain,mempool}_stats each contain an object with tx_count, funded_txo_count, funded_txo_sum, spent_txo_count and spent_txo_sum.
     /// Elements-based chains don't have the {funded,spent}_txo_sum fields.
-    /// 
+    ///
     /// Route : GET /address/:address
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -528,26 +525,26 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_address(
         &self,
         address: &str,
     ) -> Result<AddressInfoFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/address/", address);
+        let request_url = format!("{}/address/{}", self.url, address);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_script_hash Get information about an scripthash
     /// Available fields: scripthash, chain_stats and mempool_stats.
     /// {chain,mempool}_stats each contain an object with tx_count, funded_txo_count, funded_txo_sum, spent_txo_count and spent_txo_sum.
     /// Elements-based chains don't have the {funded,spent}_txo_sum fields.
-    /// 
+    ///
     /// Route : GET /scripthash/:hash
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -556,24 +553,24 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_script_hash(
         &self,
         scripthash: &str,
     ) -> Result<AddressInfoFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/scripthash/", scripthash);
+        let request_url = format!("{}/scripthash/{}", self.url, scripthash);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_address_txs Get transaction history for the specified address/scripthash, sorted with newest first.
     /// Returns up to 50 mempool transactions plus the first 25 confirmed transactions. You can request more confirmed transactions using :last_seen_txid(see below).
-    /// 
+    ///
     /// Route : GET /address/:address/txs
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -582,24 +579,23 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_address_txs(
         &self,
         address: &str,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/address/", address, "/txs");
+        let request_url = format!("{}/address/{}/txs", self.url, address);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
     /// get_script_hash_txs Get transaction history for the specified address/scripthash, sorted with newest first.
     /// Returns up to 50 mempool transactions plus the first 25 confirmed transactions. You can request more confirmed transactions using :last_seen_txid(see below).
-    /// 
+    ///
     /// Route : GET /scripthash/:hash/txs
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -608,24 +604,25 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_script_hash_txs(
         &self,
         scripthash: &str,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/scripthash/", scripthash, "/txs");
+        let request_url = format!("{}/scripthash/{}/txs", self.url, scripthash);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_address_txs_chain Get confirmed transaction history for the specified address/scripthash, sorted with newest first.
     /// Returns 25 transactions per page. More can be requested by specifying the last txid seen by the previous query.
-    /// 
+    ///
     /// Route : GET /address/:address/txs/chain[/:last_seen_txid]
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -634,29 +631,29 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_address_txs_chain(
         &self,
         address: &str,
         txid: Option<&str>,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let mut request_url = format!("{}{}{}{}", self.url, "/address/", address, "/txs/chain");
-        match txid {
-            Some(txid) => request_url.push_str(&format!("/{}", txid)),
-            _ => (),
-        }
+        let request_url = if let Some(id) = txid {
+            format!("{}/address/{}/txs/chain/{}", self.url, address, id)
+        } else {
+            format!("{}/address/{}/txs/chain", self.url, address)
+        };
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_script_hash_txs_chain Get confirmed transaction history for the specified address/scripthash, sorted with newest first.
     /// Returns 25 transactions per page. More can be requested by specifying the last txid seen by the previous query.
-    /// 
+    ///
     /// Route : GET /scripthash/:hash/txs/chain[/:last_seen_txid]
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -665,32 +662,29 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_script_hash_txs_chain(
         &self,
         scripthash: &str,
         txid: Option<&str>,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let mut request_url = format!(
-            "{}{}{}{}",
-            self.url, "/scripthash/", scripthash, "/txs/chain"
-        );
-        match txid {
-            Some(txid) => request_url.push_str(&format!("/{}", txid)),
-            _ => (),
-        }
+        let request_url = if let Some(id) = txid {
+            format!("{}/scripthash/{}/txs/chain/{}", self.url, scripthash, id)
+        } else {
+            format!("{}/scripthash/{}/txs/chain", self.url, scripthash)
+        };
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_address_txs_mempool Get unconfirmed transaction history for the specified address.
     /// Returns up to 50 transactions (no paging).
-    /// 
+    ///
     /// Route : GET /address/:address/txs/mempool
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -699,24 +693,24 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_address_txs_mempool(
         &self,
         address: &str,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/address/", address, "/txs/mempool");
+        let request_url = format!("{}/address/{}/txs/mempool", self.url, address);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_script_hash_txs_mempool Get unconfirmed transaction history for the specified scripthash.
     /// Returns up to 50 transactions (no paging).
-    /// 
+    ///
     /// Route : GET /scripthash/:hash/txs/mempool
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -725,28 +719,25 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_script_hash_txs_mempool(
         &self,
         scripthash: &str,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!(
-            "{}{}{}{}",
-            self.url, "/scripthash/", scripthash, "/txs/mempool"
-        );
+        let request_url = format!("{}/scripthash/{}/txs/mempool", self.url, scripthash,);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_address_utxo Get the list of unspent transaction outputs associated with the address
     /// Available fields: txid, vout, value and status (with the status of the funding tx).
     /// Elements-based chains have a valuecommitment field that may appear in place of value, plus the following additional fields: asset/assetcommitment, nonce/noncecommitment, surjection_proof and range_proof.
-    /// 
+    ///
     /// Route : GET /address/:address/utxo
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -755,25 +746,25 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_address_utxo(
         &self,
         address: &str,
     ) -> Result<Vec<UtxoFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/address/", address, "/utxo");
+        let request_url = format!("{}/address/{}/utxo", self.url, address);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
+
     /// get_script_hash_utxo Get the list of unspent transaction outputs associated with the address
     /// Available fields: txid, vout, value and status (with the status of the funding tx).
     /// Elements-based chains have a valuecommitment field that may appear in place of value, plus the following additional fields: asset/assetcommitment, nonce/noncecommitment, surjection_proof and range_proof.
-    /// 
+    ///
     /// Route : GET /scripthash/:hash/utxo
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -782,7 +773,6 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
     pub async fn get_script_hash_utxo(
         &self,
         scripthash: &str,
@@ -799,7 +789,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -808,7 +798,7 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_address_prefix(
         &self,
         prefix: &str,
@@ -829,7 +819,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -848,7 +838,7 @@ impl ApiClient {
     /// }
     /// ````
     /// In this example, there are transactions weighting a total of 102,131 vbytes that are paying more than 53 sat/vB, 110,990 vbytes of transactions paying between 38 and 53 sat/vB, 138,976 vbytes paying between 34 and 38, etc.
-    #[allow(dead_code)]
+
     pub async fn get_mempool(&self) -> Result<MemPoolFormat, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}", self.url, "/mempool");
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
@@ -862,7 +852,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -871,7 +861,7 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_mempool_txids(&self) -> Result<Vec<String>, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}", self.url, "/mempool/txids");
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
@@ -886,7 +876,7 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -895,7 +885,7 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn get_mempool_recent(
         &self,
     ) -> Result<Vec<MempoolTxFormat>, Box<dyn std::error::Error>> {
@@ -906,13 +896,13 @@ impl ApiClient {
     /// fee_estimate Get an object where the key is the confirmation target (in number of blocks) and the value is the estimated feerate (in sat/vB).
     /// The available confirmation targets are 1-25, 144, 504 and 1008 blocks.
     /// For example: { "1": 87.882, "2": 87.882, "3": 87.882, "4": 87.882, "5": 81.129, "6": 68.285, ..., "144": 1.027, "504": 1.027, "1008": 1.027 }
-    /// 
+    ///
     /// Route : GET /fee-estimates
     ///
     /// Example :
     /// ````rust
     /// use esplora_api;
-    /// 
+    ///
     /// #[tokio::main]
     /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -921,7 +911,7 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub async fn fee_estimate(&self) -> Result<HashMap<String, f32>, Box<dyn std::error::Error>> {
         let request_url = format!("{}{}", self.url, "/fee-estimates");
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;

@@ -39,9 +39,7 @@ impl ApiClient {
             }
             None => (),
         }
-        let build = client_builder
-            .build()
-            .unwrap_or(reqwest::Client::new());
+        let build = client_builder.build().unwrap_or(reqwest::Client::new());
 
         Ok(ApiClient {
             url: url.to_string(),

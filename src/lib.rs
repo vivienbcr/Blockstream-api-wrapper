@@ -1,7 +1,7 @@
 pub use reqwest;
 pub use serde;
-pub mod data;
 pub mod async_impl;
+pub mod data;
 // pub use self::async_impl::{client,reqwests};
 
 // #[cfg(feature = "blocking")]
