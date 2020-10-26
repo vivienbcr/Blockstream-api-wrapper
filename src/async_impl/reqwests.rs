@@ -777,7 +777,7 @@ impl ApiClient {
         &self,
         scripthash: &str,
     ) -> Result<Vec<UtxoFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/scripthash/", scripthash, "/utxo");
+        let request_url = format!("{}/scripthash/{}/utxo", self.url, scripthash);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
@@ -803,7 +803,7 @@ impl ApiClient {
         &self,
         prefix: &str,
     ) -> Result<Vec<String>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/address-prefix/", prefix);
+        let request_url = format!("{}/address-prefix/{}", self.url, prefix);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
@@ -838,9 +838,8 @@ impl ApiClient {
     /// }
     /// ````
     /// In this example, there are transactions weighting a total of 102,131 vbytes that are paying more than 53 sat/vB, 110,990 vbytes of transactions paying between 38 and 53 sat/vB, 138,976 vbytes paying between 34 and 38, etc.
-
     pub async fn get_mempool(&self) -> Result<MemPoolFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/mempool");
+        let request_url = format!("{}/mempool", self.url);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
@@ -861,9 +860,8 @@ impl ApiClient {
     ///     Ok(())
     /// }
     /// ````
-
     pub async fn get_mempool_txids(&self) -> Result<Vec<String>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/mempool/txids");
+        let request_url = format!("{}/mempool/txids", self.url);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
@@ -889,7 +887,7 @@ impl ApiClient {
     pub async fn get_mempool_recent(
         &self,
     ) -> Result<Vec<MempoolTxFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/mempool/recent");
+        let request_url = format!("{}/mempool/recent", self.url);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
@@ -913,7 +911,7 @@ impl ApiClient {
     /// ````
 
     pub async fn fee_estimate(&self) -> Result<HashMap<String, f32>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/fee-estimates");
+        let request_url = format!("{}/fee-estimates", self.url);
         let resp = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
