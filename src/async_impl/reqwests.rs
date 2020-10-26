@@ -77,14 +77,13 @@ impl ApiClient {
     pub async fn get_block_txs(
         &self,
         hash: &str,
-        start_index: Option<i32>,
+        start_index: Option<i32>, // Why Option ?
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let i = start_index.unwrap_or(0);
-        let mut request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/txs");
-        match i {
-            i if i != 0 => request_url.push_str(&format!("/{}", i.to_string())),
-            _ => (),
-        }
+        let request_url = if let Some(i) = start_index {
+            format!("{}/block/{}/txs/{}", self.url, hash, i)
+        } else {
+            format!("{}/block/{}/txs", self.url, hash)
+        };
         let resp: Vec<TransactionFormat> =
             self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
