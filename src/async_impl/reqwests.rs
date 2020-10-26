@@ -137,16 +137,9 @@ impl ApiClient {
         hash: &str,
         index: i32,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!(
-            "{}{}{}{}{}",
-            self.url,
-            "/block/",
-            hash,
-            "/txid/",
-            index.to_string()
-        );
+        let request_url = format!("{}/block/{}/txid/{}", self.url, hash, index);
         let resp: String = self.reqwest.get(&request_url).send().await?.text().await?;
-        Ok(resp.clone())
+        Ok(resp)
     }
     /// get_block_raw_format Returns the raw block representation in binary.
     ///
