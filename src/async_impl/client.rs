@@ -46,4 +46,13 @@ impl ApiClient {
             reqwest: build,
         })
     }
+    pub fn new_from_config(
+        url: &str,
+        client: reqwest::Client
+    )->Result<Self, Box<dyn std::error::Error>> {
+        Ok(ApiClient {
+            url: url.to_string(),
+            reqwest: client,
+        })
+    }
 }

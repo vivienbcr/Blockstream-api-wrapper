@@ -17,13 +17,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_block("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").await?;
+    ///     let response = client.get_block("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     pub fn get_block(&self, hash: &str) -> Result<BlockFormat, Box<dyn std::error::Error>> {
@@ -38,13 +37,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_block_status("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").await?;
+    ///     let response = client.get_block_status("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     pub fn get_block_status(&self, hash: &str) -> Result<BlockStatus, Box<dyn std::error::Error>> {
@@ -62,13 +60,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_block_txs("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7", Some(25)).await?;
+    ///     let response = client.get_block_txs("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7", Some(25)).unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     pub fn get_block_txs(
@@ -94,13 +91,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_block_txids("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").await?;
+    ///     let response = client.get_block_txids("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     pub fn get_block_txids(&self, hash: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
@@ -117,13 +113,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_block_txid_at_index("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",25).await?;
+    ///     let response = client.get_block_txid_at_index("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",25).unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     pub fn get_block_txid_at_index(
@@ -151,13 +146,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_block_raw_format("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").await?;
+    ///     let response = client.get_block_raw_format("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     pub fn get_block_raw_format(&self, hash: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
@@ -173,13 +167,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_block_height(424242).await?;
+    ///     let response = client.get_block_height(424242).unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     pub fn get_block_height(&self, height: i32) -> Result<String, Box<dyn std::error::Error>> {
@@ -194,13 +187,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_blocks(1234).await?;
+    ///     let response = client.get_blocks(1234).unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -219,13 +211,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_blocks_tip_height().await?;
+    ///     let response = client.get_blocks_tip_height().unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -243,13 +234,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_blocks_tip_height().await?;
+    ///     let response = client.get_blocks_tip_height().unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -265,13 +255,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_tx("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").await?;
+    ///     let response = client.get_tx("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -287,13 +276,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_tx_status("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").await?;
+    ///     let response = client.get_tx_status("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -309,13 +297,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_tx_raw("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").await?;
+    ///     let response = client.get_tx_raw("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -331,13 +318,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_tx_hex("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").await?;
+    ///     let response = client.get_tx_hex("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -353,13 +339,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_tx_merkleblock_proof("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").await?;
+    ///     let response = client.get_tx_merkleblock_proof("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -378,13 +363,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_tx_merkle_proof("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").await?;
+    ///     let response = client.get_tx_merkle_proof("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -404,13 +388,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_tx_outspend("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316",Some(1)).await?;
+    ///     let response = client.get_tx_outspend("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316",Some(1)).unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -437,13 +420,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_tx_outspends("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316").await?;
+    ///     let response = client.get_tx_outspends("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -481,13 +463,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_address("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").await?;
+    ///     let response = client.get_address("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -509,13 +490,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_script_hash("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").await?;
+    ///     let response = client.get_script_hash("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -535,13 +515,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_address_txs("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").await?;
+    ///     let response = client.get_address_txs("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -561,13 +540,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_script_hash_txs("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").await?;
+    ///     let response = client.get_script_hash_txs("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -587,13 +565,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_address_txs_chain("n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",Some("d0075b62f8b3e464472b8edecf56083ca3e9e8424f5f332ed2f9045d7fcccddc")).await?;
+    ///     let response = client.get_address_txs_chain("n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",Some("d0075b62f8b3e464472b8edecf56083ca3e9e8424f5f332ed2f9045d7fcccddc")).unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -618,13 +595,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_script_hash_txs_chain("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",None).await?;
+    ///     let response = client.get_script_hash_txs_chain("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",None).unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -652,13 +628,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_address_txs_mempool("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").await?;
+    ///     let response = client.get_address_txs_mempool("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -678,13 +653,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_script_hash_txs_mempool("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").await?;
+    ///     let response = client.get_script_hash_txs_mempool("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -708,13 +682,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_address_utxo("2NDcM3CGUTwqFL7y8BSBJTYJ9kToeXawkUF").await?;
+    ///     let response = client.get_address_utxo("2NDcM3CGUTwqFL7y8BSBJTYJ9kToeXawkUF").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -735,13 +708,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_script_hash_utxo("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").await?;
+    ///     let response = client.get_script_hash_utxo("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -761,13 +733,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_address_prefix("2NDcM").await?;
+    ///     let response = client.get_address_prefix("2NDcM").unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -791,13 +762,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_mempool().await?;
+    ///     let response = client.get_mempool().unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     /// Example output:
@@ -824,13 +794,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_mempool_txids().await?;
+    ///     let response = client.get_mempool_txids().unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -848,13 +817,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.get_mempool_recent().await?;
+    ///     let response = client.get_mempool_recent().unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
@@ -872,13 +840,12 @@ impl ApiClient {
     /// Example :
     /// ````rust
     /// use esplora_api;
-    ///
-    /// #[tokio::main]
-    /// async fn run() -> Result<(), Box<dyn std::error::Error>> {
+    /// 
+    /// fn main(){
     ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
-    ///     let response = client.fee_estimate().await?;
+    ///     let response = client.fee_estimate().unwrap();
     ///     println!("{:?}",response);
-    ///     Ok(())
+    ///     
     /// }
     /// ````
     #[allow(dead_code)]
