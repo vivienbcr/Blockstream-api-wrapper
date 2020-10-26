@@ -918,280 +918,311 @@ impl ApiClient {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
-    use tokio_test;
     static ENDPOINT_URL: &str = "https://blockstream.info/testnet/api/";
     fn default_client() -> ApiClient {
         return ApiClient::new(ENDPOINT_URL, None).unwrap();
     }
-    macro_rules! aw {
-        ($e:expr) => {
-            tokio_test::block_on($e)
-        };
-    }
-    #[test]
-    fn get_block() {
+
+    #[tokio::test]
+    async fn get_block() {
         let client = default_client();
-        let response =
-            aw!(client
-                .get_block("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7"));
-        assert_eq!(response.is_err(), false);
+        let response = client
+            .get_block("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7")
+            .await;
+        assert!(response.is_ok());
     }
-    #[test]
-    fn get_block_status() {
+    #[tokio::test]
+    async fn get_block_status() {
         let client = default_client();
-        let response = aw!(client
-            .get_block_status("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7"));
-        assert_eq!(response.is_err(), false);
+        let response = client
+            .get_block_status("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7")
+            .await;
+        assert!(response.is_ok());
     }
-    #[test]
-    fn get_block_txs_with_and_without_index() {
+    #[tokio::test]
+    async fn get_block_txs_with_and_without_index() {
         let client = default_client();
-        let first_txs_index = aw!(client.get_block_txs(
-            "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
-            None,
-        ));
-        let second_txs_index = aw!(client.get_block_txs(
-            "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
-            Some(25),
-        ));
-        assert_eq!(first_txs_index.is_err(), false);
-        assert_eq!(second_txs_index.is_err(), false);
+        let first_txs_index = client
+            .get_block_txs(
+                "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
+                None,
+            )
+            .await;
+        let second_txs_index = client
+            .get_block_txs(
+                "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
+                Some(25),
+            )
+            .await;
+        assert!(first_txs_index.is_ok());
+        assert!(second_txs_index.is_ok());
     }
-    #[test]
-    fn get_block_txids() {
+    #[tokio::test]
+    async fn get_block_txids() {
         let client = default_client();
-        let txids_list = aw!(client
-            .get_block_txids("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7"));
-        assert_eq!(txids_list.is_err(), false);
+        let txids_list = client
+            .get_block_txids("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7")
+            .await;
+        assert!(txids_list.is_ok());
     }
-    #[test]
-    fn get_block_txid_at_index() {
+    #[tokio::test]
+    async fn get_block_txid_at_index() {
         let client = default_client();
-        let txid = aw!(client.get_block_txid_at_index(
-            "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
-            2,
-        ));
-        assert_eq!(txid.is_err(), false);
+        let txid = client
+            .get_block_txid_at_index(
+                "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
+                2,
+            )
+            .await;
+        assert!(txid.is_ok());
     }
 
-    #[test]
-    fn get_block_raw_format() {
+    #[tokio::test]
+    async fn get_block_raw_format() {
         let client = default_client();
-        let response = aw!(client.get_block_raw_format(
-            "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
-        ));
+        let response = client
+            .get_block_raw_format(
+                "000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",
+            )
+            .await;
         assert_eq!(response.is_err(), false);
     }
-    #[test]
-    fn get_block_height() {
+    #[tokio::test]
+    async fn get_block_height() {
         let client = default_client();
-        let block_hash = aw!(client.get_block_height(424242)).unwrap();
-        let block = aw!(client.get_block(&block_hash));
-        assert_eq!(block.is_err(), false);
+        let block_hash = client.get_block_height(424242).await.unwrap();
+        let block = client.get_block(&block_hash).await;
+        assert!(block.is_ok());
     }
-    #[test]
+    #[tokio::test]
     // Return 10 blocks from start_height
-    fn get_blocks() {
+    async fn get_blocks() {
         let client = default_client();
-        let blocks = aw!(client.get_blocks(1234));
-        assert_eq!(blocks.is_err(), false);
+        let blocks = client.get_blocks(1234).await;
+        assert!(blocks.is_ok());
     }
-    #[test]
+    #[tokio::test]
     // Function need return last block height
-    fn get_blocks_tip_height() {
+    async fn get_blocks_tip_height() {
         let client = default_client();
-        let height = aw!(client.get_blocks_tip_height());
+        let height = client.get_blocks_tip_height().await;
 
-        assert_eq!(height.is_err(), false);
+        assert!(height.is_ok());
     }
-    #[test]
+    #[tokio::test]
     // Verify function return hash
-    fn get_blocks_tip_hash() {
+    async fn get_blocks_tip_hash() {
         let client = default_client();
-        let hash = aw!(client.get_blocks_tip_hash());
+        let hash = client.get_blocks_tip_hash().await;
 
-        assert_eq!(hash.is_err(), false);
+        assert!(hash.is_ok());
     }
-    #[test]
+    #[tokio::test]
     // Check tx version
-    fn get_tx() {
+    async fn get_tx() {
         let client = default_client();
-        let tx =
-            aw!(client.get_tx("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24"));
+        let tx = client
+            .get_tx("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24")
+            .await;
         assert_eq!(tx.is_err(), false);
     }
-    #[test]
+    #[tokio::test]
     // Tx status is confirmed
-    fn get_tx_status() {
+    async fn get_tx_status() {
         let client = default_client();
-        let tx_status = aw!(client
-            .get_tx_status("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24"));
-        assert_eq!(tx_status.is_err(), false);
+        let tx_status = client
+            .get_tx_status("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24")
+            .await;
+        assert!(tx_status.is_ok());
     }
-    #[test]
+    #[tokio::test]
     // Tx raw
-    fn get_tx_raw() {
+    async fn get_tx_raw() {
         let client = default_client();
-        let tx_raw =
-            aw!(client
-                .get_tx_raw("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24"));
-        assert_eq!(tx_raw.is_err(), false);
+        let tx_raw = client
+            .get_tx_raw("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24")
+            .await;
+        assert!(tx_raw.is_ok());
     }
-    #[test]
+    #[tokio::test]
     // Tx hex
-    fn get_tx_hex() {
+    async fn get_tx_hex() {
         let client = default_client();
-        let tx_hex =
-            aw!(client
-                .get_tx_hex("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24"));
-        assert_eq!(tx_hex.is_err(), false);
+        let tx_hex = client
+            .get_tx_hex("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24")
+            .await;
+        assert!(tx_hex.is_ok());
     }
-    #[test]
-    fn get_tx_merkleblock_proof() {
+    #[tokio::test]
+    async fn get_tx_merkleblock_proof() {
         let client = default_client();
-        let tx_hex = aw!(client.get_tx_merkleblock_proof(
-            "c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24",
-        ));
-        assert_eq!(tx_hex.is_err(), false);
+        let tx_hex = client
+            .get_tx_merkleblock_proof(
+                "c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24",
+            )
+            .await;
+        assert!(tx_hex.is_ok());
     }
-    #[test]
-    fn get_tx_merkle_proof() {
+    #[tokio::test]
+    async fn get_tx_merkle_proof() {
         let client = default_client();
-        let merkle_proof = aw!(client.get_tx_merkle_proof(
-            "6814c0b3915a8de663851b9887e0cce7d0d6c6b3f7c28b97ba8a643b72e1b7c3",
-        ));
-        assert_eq!(merkle_proof.is_err(), false);
+        let merkle_proof = client
+            .get_tx_merkle_proof("6814c0b3915a8de663851b9887e0cce7d0d6c6b3f7c28b97ba8a643b72e1b7c3")
+            .await;
+        assert!(merkle_proof.is_ok());
     }
-    #[test]
-    fn get_tx_outspend() {
+    #[tokio::test]
+    async fn get_tx_outspend() {
         let client = default_client();
-        let outspend = aw!(client.get_tx_outspend(
-            "fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316",
-            Some(1),
-        ));
-        assert_eq!(outspend.is_err(), false);
+        let outspend = client
+            .get_tx_outspend(
+                "fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316",
+                Some(1),
+            )
+            .await;
+        assert!(outspend.is_ok());
     }
-    #[test]
-    fn get_tx_outspends() {
+    #[tokio::test]
+    async fn get_tx_outspends() {
         let client = default_client();
-        let outpends = aw!(client
-            .get_tx_outspends("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316"));
-        assert_eq!(outpends.is_err(), false);
+        let outpends = client
+            .get_tx_outspends("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316")
+            .await;
+        assert!(outpends.is_ok());
     }
-    #[test]
-    fn post_tx() {
+    #[tokio::test]
+    async fn post_tx() {
         let client = default_client();
-        let resp =  aw!(client.post_tx("010000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff2003220d1c04d6d37c5f0877fffb9a4b3500000d2f6e6f64655374726174756d2f00000000030000000000000000266a24aa21a9ed61dc942663feda48033d1026d2fa8acf0f098870202c541bffa7771e8dc51e159b0e2801000000001976a914dfdf4d53296fac595dc33d8ac7216ba516b8dcc588ac8ffd0200000000001976a914bfcc245931cbad63d09f62df43bcab989991014e88ac0120000000000000000000000000000000000000000000000000000000000000000000000000"));
-        assert_eq!(resp.is_err(), false)
+        let resp =  client.post_tx("010000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff2003220d1c04d6d37c5f0877fffb9a4b3500000d2f6e6f64655374726174756d2f00000000030000000000000000266a24aa21a9ed61dc942663feda48033d1026d2fa8acf0f098870202c541bffa7771e8dc51e159b0e2801000000001976a914dfdf4d53296fac595dc33d8ac7216ba516b8dcc588ac8ffd0200000000001976a914bfcc245931cbad63d09f62df43bcab989991014e88ac0120000000000000000000000000000000000000000000000000000000000000000000000000").await;
+        assert!(resp.is_ok());
     }
-    #[test]
-    fn get_address() {
+    #[tokio::test]
+    async fn get_address() {
         let client = default_client();
-        let address = aw!(client.get_address("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5"));
-        assert_eq!(address.is_err(), false)
+        let address = client
+            .get_address("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5")
+            .await;
+        assert!(address.is_ok())
     }
-    #[test]
-    fn get_script_hash() {
+    #[tokio::test]
+    async fn get_script_hash() {
         let client = default_client();
-        let address = aw!(client
-            .get_script_hash("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c"));
-        assert_eq!(address.is_err(), false)
+        let address = client
+            .get_script_hash("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c")
+            .await;
+        assert!(address.is_ok())
     }
-    #[test]
-    fn get_address_txs() {
+    #[tokio::test]
+    async fn get_address_txs() {
         let client = default_client();
-        let tx_list = aw!(client.get_address_txs("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5"));
-        assert_eq!(tx_list.is_err(), false)
+        let tx_list = client
+            .get_address_txs("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5")
+            .await;
+        assert!(tx_list.is_ok())
     }
-    #[test]
-    fn get_script_hash_txs() {
+    #[tokio::test]
+    async fn get_script_hash_txs() {
         let client = default_client();
-        let tx_list = aw!(client.get_script_hash_txs(
-            "c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",
-        ));
-        assert_eq!(tx_list.is_err(), false)
+        let tx_list = client
+            .get_script_hash_txs("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c")
+            .await;
+        assert!(tx_list.is_ok())
     }
-    #[test]
-    fn get_address_txs_chain() {
+    #[tokio::test]
+    async fn get_address_txs_chain() {
         let client = default_client();
-        let tx_list = aw!(client.get_address_txs_chain(
-            "n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",
-            Some("d0075b62f8b3e464472b8edecf56083ca3e9e8424f5f332ed2f9045d7fcccddc"),
-        ));
-        let tx_list_from_index = aw!(client.get_address_txs_chain(
-            "n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",
-            Some(&tx_list.unwrap()[1].txid),
-        ));
-        assert_eq!(tx_list_from_index.is_err(), false)
+        let tx_list = client
+            .get_address_txs_chain(
+                "n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",
+                Some("d0075b62f8b3e464472b8edecf56083ca3e9e8424f5f332ed2f9045d7fcccddc"),
+            )
+            .await;
+        let tx_list_from_index = client
+            .get_address_txs_chain(
+                "n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",
+                Some(&tx_list.unwrap()[1].txid),
+            )
+            .await;
+        assert!(tx_list_from_index.is_ok())
     }
-    #[test]
-    fn get_script_hash_txs_chain() {
+    #[tokio::test]
+    async fn get_script_hash_txs_chain() {
         let client = default_client();
-        let tx_list = aw!(client.get_script_hash_txs_chain(
-            "c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",
-            None,
-        ));
-        assert_eq!(tx_list.is_err(), false)
+        let tx_list = client
+            .get_script_hash_txs_chain(
+                "c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",
+                None,
+            )
+            .await;
+        assert!(tx_list.is_ok())
     }
-    #[test]
-    fn get_address_txs_mempool() {
+    #[tokio::test]
+    async fn get_address_txs_mempool() {
         let client = default_client();
-        let tx_list = aw!(client.get_address_txs_mempool("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5"));
-        assert_eq!(tx_list.is_err(), false)
+        let tx_list = client
+            .get_address_txs_mempool("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5")
+            .await;
+        assert!(tx_list.is_ok())
     }
-    #[test]
-    fn get_script_hash_txs_mempool() {
+    #[tokio::test]
+    async fn get_script_hash_txs_mempool() {
         let client = default_client();
-        let tx_list = aw!(client.get_script_hash_txs_mempool(
-            "c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",
-        ));
-        assert_eq!(tx_list.is_err(), false)
+        let tx_list = client
+            .get_script_hash_txs_mempool(
+                "c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",
+            )
+            .await;
+        assert!(tx_list.is_ok())
     }
-    #[test]
-    fn get_address_utxo() {
+    #[tokio::test]
+    async fn get_address_utxo() {
         let client = default_client();
-        let utxo = aw!(client.get_address_utxo("2NDcM3CGUTwqFL7y8BSBJTYJ9kToeXawkUF"));
-        assert_eq!(utxo.is_err(), false)
+        let utxo = client
+            .get_address_utxo("2NDcM3CGUTwqFL7y8BSBJTYJ9kToeXawkUF")
+            .await;
+        assert!(utxo.is_ok())
     }
-    #[test]
-    fn get_script_hash_utxo() {
+    #[tokio::test]
+    async fn get_script_hash_utxo() {
         let client = default_client();
-        let utxo = aw!(client.get_script_hash_utxo(
-            "c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",
-        ));
-        assert_eq!(utxo.is_err(), false)
+        let utxo = client
+            .get_script_hash_utxo(
+                "c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",
+            )
+            .await;
+        assert!(utxo.is_ok())
     }
-    #[test]
-    fn get_address_prefix() {
+    #[tokio::test]
+    async fn get_address_prefix() {
         let client = default_client();
-        let addresses = aw!(client.get_address_prefix("2NDcM"));
-        assert_eq!(addresses.is_err(), false)
+        let addresses = client.get_address_prefix("2NDcM").await;
+        assert!(addresses.is_ok())
     }
-    // fee_estimate(get_mempool_recent(get_mempool_txids(get_mempool
-    #[test]
-    fn get_mempool() {
+
+    #[tokio::test]
+    async fn get_mempool() {
         let client = default_client();
-        let mempool = aw!(client.get_mempool());
-        assert_eq!(mempool.is_err(), false)
+        let mempool = client.get_mempool().await;
+        assert!(mempool.is_ok())
     }
-    #[test]
-    fn get_mempool_txids() {
+    #[tokio::test]
+    async fn get_mempool_txids() {
         let client = default_client();
-        let mempool_txids = aw!(client.get_mempool_txids());
-        assert_eq!(mempool_txids.is_err(), false)
+        let mempool_txids = client.get_mempool_txids().await;
+        assert!(mempool_txids.is_ok())
     }
-    #[test]
-    fn get_mempool_recent() {
+    #[tokio::test]
+    async fn get_mempool_recent() {
         let client = default_client();
-        let mempool_txids = aw!(client.get_mempool_recent());
-        assert_eq!(mempool_txids.is_err(), false)
+        let mempool_txids = client.get_mempool_recent().await;
+        assert!(mempool_txids.is_ok())
     }
-    #[test]
-    fn fee_estimate() {
+    #[tokio::test]
+    async fn fee_estimate() {
         let client = default_client();
-        let fee = aw!(client.fee_estimate());
-        assert_eq!(fee.is_err(), false)
+        let fee = client.fee_estimate().await;
+        assert!(fee.is_ok())
     }
 }
