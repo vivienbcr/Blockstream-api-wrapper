@@ -27,7 +27,7 @@ impl ApiClient {
     /// }
     /// ````
     pub async fn get_block(&self, hash: &str) -> Result<BlockFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/block/", hash);
+        let request_url = format!("{}/block/{}", self.url, hash);
         let resp: BlockFormat = self.reqwest.get(&request_url).send().await?.json().await?;
         Ok(resp)
     }
