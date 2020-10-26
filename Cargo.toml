@@ -7,12 +7,11 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reqwest = {version = "0.10", default-features = true, optional = true, features=["json","blocking"]  }
-serde = { version = "1.0.116", features = ["derive"] }
+reqwest = { version = "0.10.8", default-features = true, optional = true, features = ["json","blocking"] }
+serde = { version = "1.0.117", features = ["derive"] }
 
 [dev-dependencies]
-tokio-test = "0.2.1"
-tokio = { version = "0.3.1", features = ["full"] }
+tokio = { version = "0.2.5", features = [ "rt-threaded","macros","test-util"] }
 
 [features]
 default = [ "reqwest" , "reqwest/default"]
