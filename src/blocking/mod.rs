@@ -1,3 +1,3 @@
 mod client;
-mod reqwests;
-pub use self::client::ApiClient;
+pub use self::client::{ApiClient,ClientOptions,HeadersOptions};
+
