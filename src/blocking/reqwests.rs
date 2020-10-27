@@ -16,17 +16,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_block("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
     pub fn get_block(&self, hash: &str) -> Result<BlockFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/block/", hash);
+        let request_url = format!("{}/block/{}", self.url, hash);
         let resp: BlockFormat = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -36,17 +35,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_block_status("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
     pub fn get_block_status(&self, hash: &str) -> Result<BlockStatus, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/status");
+        let request_url = format!("{}/block/{}/status", self.url, hash);
         let resp: BlockStatus = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -59,10 +57,9 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_block_txs("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7", Some(25)).unwrap();
     ///     println!("{:?}",response);
     ///     
@@ -73,12 +70,11 @@ impl ApiClient {
         hash: &str,
         start_index: Option<i32>,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let i = start_index.unwrap_or(0);
-        let mut request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/txs");
-        match i {
-            i if i != 0 => request_url.push_str(&format!("/{}", i.to_string())),
-            _ => (),
-        }
+        let request_url = if let Some(i) = start_index {
+            format!("{}/block/{}/txs/{}", self.url, hash, i)
+        } else {
+            format!("{}/block/{}/txs", self.url, hash)
+        };
         let resp: Vec<TransactionFormat> = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -90,17 +86,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_block_txids("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
     pub fn get_block_txids(&self, hash: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/txids");
+        let request_url = format!("{}/block/{}/txids", self.url, hash);
         let resp: Vec<String> = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -112,10 +107,9 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_block_txid_at_index("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7",25).unwrap();
     ///     println!("{:?}",response);
     ///     
@@ -127,11 +121,9 @@ impl ApiClient {
         index: i32,
     ) -> Result<String, Box<dyn std::error::Error>> {
         let request_url = format!(
-            "{}{}{}{}{}",
+            "{}/block/{}/txid/{}",
             self.url,
-            "/block/",
             hash,
-            "/txid/",
             index.to_string()
         );
         let resp: String = self.reqwest.get(&request_url).send()?.text()?;
@@ -145,17 +137,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_block_raw_format("000000000000003aaa3b99e31ed1cac4744b423f9e52ada4971461c81d4192f7").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
     pub fn get_block_raw_format(&self, hash: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/block/", hash, "/raw");
+        let request_url = format!("{}/block/{}/raw", self.url, hash);
         let resp = self.reqwest.get(&request_url).send()?.bytes()?.to_vec();
         Ok(resp)
     }
@@ -166,17 +157,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_block_height(424242).unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
     pub fn get_block_height(&self, height: i32) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/block-height/", height);
+        let request_url = format!("{}/block-height/{}", self.url, height);
         let resp = self.reqwest.get(&request_url).send()?.text()?;
         Ok(resp)
     }
@@ -186,21 +176,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_blocks(1234).unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_blocks(
         &self,
         start_height: i32,
     ) -> Result<Vec<BlockFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/blocks/", start_height);
+        let request_url = format!("{}/blocks/{}", self.url, start_height);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -210,18 +198,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_blocks_tip_height().unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_blocks_tip_height(&self) -> Result<i32, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/blocks/tip/height");
+        let request_url = format!("{}/blocks/tip/height", self.url);
         let resp = self.reqwest.get(&request_url).send()?.text()?.parse()?;
         Ok(resp)
     }
@@ -229,22 +215,19 @@ impl ApiClient {
     ///
     /// Route : GET /blocks/tip/hash
     ///
-    ///
-    ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_blocks_tip_height().unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
+
     pub fn get_blocks_tip_hash(&self) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/blocks/tip/hash");
+        let request_url = format!("{}/blocks/tip/hash", self.url);
         let resp = self.reqwest.get(&request_url).send()?.text()?;
         Ok(resp)
     }
@@ -254,18 +237,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_tx("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_tx(&self, txid: &str) -> Result<TransactionFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/tx/", txid);
+        let request_url = format!("{}/tx/{}", self.url, txid);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -275,18 +256,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_tx_status("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_tx_status(&self, txid: &str) -> Result<TxStatusFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/status");
+        let request_url = format!("{}/tx/{}/status", self.url, txid);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -296,18 +275,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_tx_raw("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_tx_raw(&self, txid: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/raw");
+        let request_url = format!("{}/tx/{}/raw", self.url, txid);
         let resp = self.reqwest.get(&request_url).send()?.bytes()?.to_vec();
         Ok(resp)
     }
@@ -317,18 +294,17 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
+    /// 
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_tx_hex("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_tx_hex(&self, txid: &str) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/raw");
+        let request_url = format!("{}/tx/{}/raw", self.url, txid);
         let resp = self.reqwest.get(&request_url).send()?.text()?;
         Ok(resp)
     }
@@ -338,21 +314,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_tx_merkleblock_proof("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_tx_merkleblock_proof(
         &self,
         txid: &str,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/merkleblock-proof");
+        let request_url = format!("{}/tx/{}/merkleblock-proof", self.url, txid);
         let resp = self.reqwest.get(&request_url).send()?.text()?;
         Ok(resp)
     }
@@ -362,21 +336,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_tx_merkle_proof("c9ee6eff3d73d6cb92382125c3207f6447922b545d4d4e74c47bfeb56fff7d24").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_tx_merkle_proof(
         &self,
         txid: &str,
     ) -> Result<MerkleProofFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/merkle-proof");
+        let request_url = format!("{}/tx/{}/merkle-proof", self.url, txid);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -387,29 +359,24 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_tx_outspend("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316",Some(1)).unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_tx_outspend(
         &self,
         txid: &str,
         vout: Option<i32>,
     ) -> Result<OutspentFormat, Box<dyn std::error::Error>> {
-        let request_url = format!(
-            "{}{}{}{}{}",
-            self.url,
-            "/tx/",
-            txid,
-            "/outspend/",
-            vout.unwrap().to_string()
-        );
+        let request_url = if let Some(vout_idx) = vout {
+            format!("{}/tx/{}/outspend/{}", self.url, txid, vout_idx)
+        } else {
+            format!("{}/tx/{}/outspend", self.url, txid) // FIXME: not sure if this exist
+        };
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -419,21 +386,20 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
+    /// 
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_tx_outspends("fac9af7f793330af3cc0bce4790d98499c59d47a125af7260edd61d647003316").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_tx_outspends(
         &self,
         txid: &str,
     ) -> Result<Vec<OutspentFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/tx/", txid, "/outspends");
+        let request_url = format!("{}/tx/{}/outspends", self.url, txid);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -442,9 +408,8 @@ impl ApiClient {
     ///
     /// Route : POST /tx
     ///
-    #[allow(dead_code)]
     pub fn post_tx(&self, hex_transaction: &str) -> Result<String, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/tx");
+        let request_url = format!("{}/tx", self.url);
         let resp = self
             .reqwest
             .post(&request_url)
@@ -462,21 +427,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_address("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_address(
         &self,
         address: &str,
     ) -> Result<AddressInfoFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/address/", address);
+        let request_url = format!("{}/address/{}", self.url, address);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -489,21 +452,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_script_hash("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_script_hash(
         &self,
         scripthash: &str,
     ) -> Result<AddressInfoFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/scripthash/", scripthash);
+        let request_url = format!("{}/scripthash/{}", self.url, scripthash);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -514,21 +475,20 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
+    /// 
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_address_txs("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_address_txs(
         &self,
         address: &str,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/address/", address, "/txs");
+        let request_url = format!("{}/address/{}/txs", self.url,  address);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -539,21 +499,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_script_hash_txs("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_script_hash_txs(
         &self,
         scripthash: &str,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/scripthash/", scripthash, "/txs");
+        let request_url = format!("{}/scripthash/{}/txs", self.url, scripthash);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -564,26 +522,24 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_address_txs_chain("n1vgV8XmoggmRXzW3hGD8ZNTAgvhcwT4Gk",Some("d0075b62f8b3e464472b8edecf56083ca3e9e8424f5f332ed2f9045d7fcccddc")).unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_address_txs_chain(
         &self,
         address: &str,
         txid: Option<&str>,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let mut request_url = format!("{}{}{}{}", self.url, "/address/", address, "/txs/chain");
-        match txid {
-            Some(txid) => request_url.push_str(&format!("/{}", txid)),
-            _ => (),
-        }
+        let request_url = if let Some(id) = txid {
+            format!("{}/address/{}/txs/chain/{}", self.url, address, id)
+        } else {
+            format!("{}/address/{}/txs/chain", self.url, address)
+        };
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -594,29 +550,24 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_script_hash_txs_chain("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c",None).unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_script_hash_txs_chain(
         &self,
         scripthash: &str,
         txid: Option<&str>,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let mut request_url = format!(
-            "{}{}{}{}",
-            self.url, "/scripthash/", scripthash, "/txs/chain"
-        );
-        match txid {
-            Some(txid) => request_url.push_str(&format!("/{}", txid)),
-            _ => (),
-        }
+        let request_url = if let Some(id) = txid {
+            format!("{}/scripthash/{}/txs/chain/{}", self.url, scripthash, id)
+        } else {
+            format!("{}/scripthash/{}/txs/chain", self.url, scripthash)
+        };
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -627,21 +578,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_address_txs_mempool("2MvJVm11phGoxEekPB8Hw2Tksb57eVRGHC5").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_address_txs_mempool(
         &self,
         address: &str,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/address/", address, "/txs/mempool");
+        let request_url = format!("{}/address/{}/txs/mempool", self.url, address);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -652,23 +601,21 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_script_hash_txs_mempool("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_script_hash_txs_mempool(
         &self,
         scripthash: &str,
     ) -> Result<Vec<TransactionFormat>, Box<dyn std::error::Error>> {
         let request_url = format!(
-            "{}{}{}{}",
-            self.url, "/scripthash/", scripthash, "/txs/mempool"
+            "{}/scripthash/{}/txs/mempool",
+            self.url, scripthash
         );
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
@@ -681,21 +628,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_address_utxo("2NDcM3CGUTwqFL7y8BSBJTYJ9kToeXawkUF").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_address_utxo(
         &self,
         address: &str,
     ) -> Result<Vec<UtxoFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/address/", address, "/utxo");
+        let request_url = format!("{}/address/{}/utxo", self.url, address);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -707,21 +652,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_script_hash_utxo("c6598a8e5728c744b9734facbf1e786c3ff5101268739d38b14ea475b60eba3c").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_script_hash_utxo(
         &self,
         scripthash: &str,
     ) -> Result<Vec<UtxoFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}{}", self.url, "/scripthash/", scripthash, "/utxo");
+        let request_url = format!("{}/scripthash/{}/utxo", self.url, scripthash);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -732,21 +675,19 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_address_prefix("2NDcM").unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_address_prefix(
         &self,
         prefix: &str,
     ) -> Result<Vec<String>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}{}", self.url, "/address-prefix/", prefix);
+        let request_url = format!("{}/address-prefix/{}", self.url, prefix);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -761,10 +702,9 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_mempool().unwrap();
     ///     println!("{:?}",response);
     ///     
@@ -780,9 +720,8 @@ impl ApiClient {
     /// }
     /// ````
     /// In this example, there are transactions weighting a total of 102,131 vbytes that are paying more than 53 sat/vB, 110,990 vbytes of transactions paying between 38 and 53 sat/vB, 138,976 vbytes paying between 34 and 38, etc.
-    #[allow(dead_code)]
     pub fn get_mempool(&self) -> Result<MemPoolFormat, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/mempool");
+        let request_url = format!("{}/mempool", self.url);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -793,18 +732,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_mempool_txids().unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_mempool_txids(&self) -> Result<Vec<String>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/mempool/txids");
+        let request_url = format!("{}/mempool/txids", self.url);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -816,18 +753,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.get_mempool_recent().unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn get_mempool_recent(&self) -> Result<Vec<MempoolTxFormat>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/mempool/recent");
+        let request_url = format!("{}/mempool/recent", self.url);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }
@@ -839,18 +774,16 @@ impl ApiClient {
     ///
     /// Example :
     /// ````rust
-    /// use esplora_api;
     /// 
     /// fn main(){
-    ///     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
     ///     let response = client.fee_estimate().unwrap();
     ///     println!("{:?}",response);
     ///     
     /// }
     /// ````
-    #[allow(dead_code)]
     pub fn fee_estimate(&self) -> Result<HashMap<String, f32>, Box<dyn std::error::Error>> {
-        let request_url = format!("{}{}", self.url, "/fee-estimates");
+        let request_url = format!("{}/fee-estimates", self.url);
         let resp = self.reqwest.get(&request_url).send()?.json()?;
         Ok(resp)
     }

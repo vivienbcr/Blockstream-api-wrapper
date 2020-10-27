@@ -12,7 +12,6 @@ pub struct HeadersOptions {
     pub authorization: Option<String>,
 }
 impl ApiClient {
-    #[allow(dead_code)]
     pub fn new(
         url: &str,
         options: Option<ClientOptions>,
