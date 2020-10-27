@@ -1,15 +1,18 @@
-// use esplora_api;
 use esplora_api::async_impl::{ApiClient, ClientOptions, HeadersOptions};
 use reqwest;
 use reqwest::header;
 static ENDPOINT_URL: &str = "https://blockstream.info/testnet/api/";
+
+fn default_client() -> ApiClient {
+    return ApiClient::new(ENDPOINT_URL, None).unwrap();
+}
 #[test]
-fn test_async_client() {
+fn async_client() {
     let client = esplora_api::async_impl::ApiClient::new(ENDPOINT_URL, None);
     assert!(client.is_ok());
 }
 #[test]
-fn test_async_client_custom_header() {
+fn async_client_custom_header() {
     let options = ClientOptions {
         headers: Some(HeadersOptions {
             authorization: Some("secret".to_string()),
@@ -19,7 +22,7 @@ fn test_async_client_custom_header() {
     assert!(client.is_ok());
 }
 #[test]
-fn test_async_client_custom_reqwest_builder() {
+fn async_client_custom_reqwest_builder() {
     let mut headers = header::HeaderMap::new();
     headers.insert(
         header::AUTHORIZATION,
@@ -31,10 +34,6 @@ fn test_async_client_custom_reqwest_builder() {
         .unwrap();
     let client = esplora_api::async_impl::ApiClient::new_from_config(ENDPOINT_URL, reqwest_client);
     assert!(client.is_ok());
-}
-
-fn default_client() -> ApiClient {
-    return ApiClient::new(ENDPOINT_URL, None).unwrap();
 }
 
 #[tokio::test]

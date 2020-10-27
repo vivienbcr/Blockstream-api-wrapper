@@ -8,7 +8,7 @@ fn default_client() -> ApiClient {
 }
 #[test]
 fn blocking_client() {
-    let client = esplora_api::async_impl::ApiClient::new(ENDPOINT_URL, None);
+    let client = esplora_api::blocking::ApiClient::new(ENDPOINT_URL, None);
     assert!(client.is_ok());
 }
 #[test]
@@ -28,11 +28,11 @@ fn blocking_client_custom_reqwest_builder() {
         header::AUTHORIZATION,
         header::HeaderValue::from_static("secret"),
     );
-    let reqwest_client = reqwest::Client::builder()
+    let reqwest_client = reqwest::blocking::Client::builder()
         .default_headers(headers)
         .build()
         .unwrap();
-    let client = esplora_api::async_impl::ApiClient::new_from_config(ENDPOINT_URL, reqwest_client);
+    let client = esplora_api::blocking::ApiClient::new_from_config(ENDPOINT_URL, reqwest_client);
     assert!(client.is_ok());
 }
 #[test]
@@ -180,7 +180,7 @@ fn blocking_get_tx_outspends() {
     assert!(outpends.is_ok());
 }
 #[test]
-fn post_tx() {
+fn blocking_post_tx() {
     let client = default_client();
     let resp = client.post_tx("010000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff2003220d1c04d6d37c5f0877fffb9a4b3500000d2f6e6f64655374726174756d2f00000000030000000000000000266a24aa21a9ed61dc942663feda48033d1026d2fa8acf0f098870202c541bffa7771e8dc51e159b0e2801000000001976a914dfdf4d53296fac595dc33d8ac7216ba516b8dcc588ac8ffd0200000000001976a914bfcc245931cbad63d09f62df43bcab989991014e88ac0120000000000000000000000000000000000000000000000000000000000000000000000000");
     assert!(resp.is_ok())
@@ -288,7 +288,7 @@ fn blocking_get_mempool_recent() {
     assert!(mempool_txids.is_ok())
 }
 #[test]
-fn fee_estimate() {
+fn blocking_fee_estimate() {
     let client = default_client();
     let fee = client.fee_estimate();
     assert!(fee.is_ok())

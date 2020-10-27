@@ -16,3 +16,8 @@ tokio = { version = "0.2.5", features = [ "rt-threaded","macros","test-util"] }
 [features]
 default = [ "reqwest" , "reqwest/default"]
 blocking = ["reqwest" , "reqwest/blocking"]
+
+[[test]]
+name = "blocking"
+path = "tests/blocking_impl_tests.rs"
+required-features = ["blocking"]

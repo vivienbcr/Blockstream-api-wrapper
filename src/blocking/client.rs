@@ -1,16 +1,16 @@
 use std::collections::HashMap;
-
+use reqwest;
 use crate::data::blockstream::{
     AddressInfoFormat, BlockFormat, BlockStatus, MemPoolFormat, MempoolTxFormat, MerkleProofFormat,
     OutspentFormat, TransactionFormat, TxStatusFormat, UtxoFormat,
 };
-/// A custom Reqwest Client with API URL
+/// Client to call esplora api, it use and Esplora Api Url. I can use custom reqwest Client build from reqwest client builder
 #[derive(Debug)]
 pub struct ApiClient {
     pub url: String,
     pub reqwest: reqwest::blocking::Client,
 }
-/// List of option for custom Reqwest usage
+/// Client basics options used to custom reqwest client
 #[derive(Debug)]
 pub struct ClientOptions {
     pub headers: Option<HeadersOptions>,
@@ -21,7 +21,23 @@ pub struct HeadersOptions {
     pub authorization: Option<String>,
 }
 impl ApiClient {
-    /// Instanciate client from endpoint API URL, and options struct.
+    /// new client from endpoint Esplora Api Url, and ClientOptions.
+    /// 
+    /// Example without options :
+    /// ````rust
+    /// use esplora_api::blocking::ApiClient;
+    /// fn main(){
+    ///     let client = esplora_api::blocking::ApiClient::new("https://some_esplora_url.com", None);
+    /// }
+    /// ````
+    /// Example with custom authorization header :
+    /// ````rust
+    /// use esplora_api::blocking::{ApiClient, ClientOptions, HeadersOptions};
+    /// fn main(){
+    ///     let options = ClientOptions { headers: Some( HeadersOptions { authorization: Some("secret".to_string())}),};
+    ///     let client = esplora_api::blocking::ApiClient::new("https://some_esplora_url.com", Some(options));
+    /// }
+    /// ````
     pub fn new(
         url: &str,
         options: Option<ClientOptions>,
@@ -57,6 +73,20 @@ impl ApiClient {
             reqwest: build,
         })
     }
+    /// new_from_config new client from endpoint Esplora Api Url, and reqwest client.
+    /// 
+    /// Example without custom reqwest client :
+    /// ````rust
+    /// use esplora_api::blocking::ApiClient;
+    /// use reqwest;
+    /// use reqwest::header;
+    /// fn main(){
+    ///     let mut headers = header::HeaderMap::new();
+    ///     headers.insert(header::AUTHORIZATION,header::HeaderValue::from_static("secret"));
+    ///     let reqwest_client = reqwest::blocking::Client::builder().default_headers(headers).build().unwrap();
+    ///     let client = esplora_api::blocking::ApiClient::new_from_config("https://some_esplora_url.com", reqwest_client);
+    /// }
+    /// ````
     pub fn new_from_config(
         url: &str,
         client: reqwest::blocking::Client
@@ -66,7 +96,7 @@ impl ApiClient {
             reqwest: client,
         })
     }
-        /// get_block Returns information about a block.
+    /// get_block Returns information about a block.
     ///
     /// Route : GET /block/:hash. Available fields:
     ///
