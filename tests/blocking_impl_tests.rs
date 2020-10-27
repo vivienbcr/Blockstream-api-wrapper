@@ -1,3 +1,4 @@
+#[cfg(feature = "blocking")]
 use esplora_api::blocking::{ApiClient, ClientOptions, HeadersOptions};
 use reqwest;
 use reqwest::header;
