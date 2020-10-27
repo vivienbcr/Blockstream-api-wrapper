@@ -1,9 +1,8 @@
-# **Experimental** Rust wrapper for Blockstream Electrs API
+# Rust wrapper for Blockstream Esplora API
 
 ## Description
 
 This library provide a simple wrapper to use Blockstream API or self hosted [Esplora - Electrs API](https://github.com/Blockstream/electrs).
-Experimental library
 
 ## Requirements
 
@@ -25,16 +24,14 @@ sudo apt install libssl-dev
 
 ```toml
 // Cargo.toml
-....
 [dependencies]
 esplora-api = { path ="./../Elecrts-wrapper" }
 tokio = { version = "0.2", features = ["macros"] }
-....
 ```
 
 ```rust
 // Main.rs
-pub use esplora_api;
+use esplora_api;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>>{
     let client = esplora_api::async_impl::ApiClient::new("https://blockstream.info/testnet/api/", None).unwrap();
@@ -48,10 +45,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>>{
 
 ```toml
 // Cargo.toml
-....
 [dependencies]
 esplora-api = { path ="./../Elecrts-wrapper", features=["blocking"]  }
-....
 ```
 
 ```rust

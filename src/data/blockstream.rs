@@ -1,6 +1,6 @@
-//! blockstream reference all data structures provided by Blocksteam API.
-//! Official API documentation is available at [Blockstream Esplora API](https://github.com/Blockstream/esplora/blob/master/API.md)
-//! Amounts are always represented in satoshis.
+/// blockstream reference all data structures provided by Blocksteam API and documentation.
+/// Official API documentation is available at [Blockstream Esplora API](https://github.com/Blockstream/esplora/blob/master/API.md)
+/// Amounts are always represented in satoshis.
 use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 pub struct BlockFormat {
