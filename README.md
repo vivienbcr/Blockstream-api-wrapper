@@ -1,5 +1,8 @@
 # Rust wrapper for Blockstream Esplora API
 
+[![codecov](https://codecov.io/gh/vivienbcr/Blockstream-api-wrapper/branch/master/graph/badge.svg?token=7P0MURXOOO)](undefined)
+[![Actions Status](https://github.com/vivienbcr/Blockstream-api-wrapper/workflows/ci/badge.svg)](https://github.com/vivienbcr/Blockstream-api-wrapper/actions)
+
 ## Description
 
 This library provide a simple wrapper to use Blockstream API or self hosted [Esplora - Electrs API](https://github.com/Blockstream/electrs).
