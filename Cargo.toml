@@ -4,6 +4,7 @@ description = "Simple wrapper to use Blockstream API or self hosted Esplora API"
 keywords = ["blockstream","bitcoin","wrapper"]
 categories = ["web-programming::http-client"]
 repository = "https://github.com/vivienbcr/Blockstream-api-wrapper"
+license = "MIT"
 version = "0.1.0"
 authors = ["Vivienbcr <vivienbcr@protonmail.com>"]
 edition = "2018"
