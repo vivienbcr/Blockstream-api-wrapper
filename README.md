@@ -1,7 +1,7 @@
 # Rust wrapper for Blockstream Esplora API
 
-[![codecov](https://codecov.io/gh/vivienbcr/Blockstream-api-wrapper/branch/master/graph/badge.svg?token=7P0MURXOOO)](undefined)
-[![Actions Status](https://github.com/vivienbcr/Blockstream-api-wrapper/workflows/ci/badge.svg)](https://github.com/vivienbcr/Blockstream-api-wrapper/actions)
+[![Crates.io](https://img.shields.io/crates/v/esplora-api)](https://crates.io/crates/esplora-api) [![DocRs](https://docs.rs/esplora-api/badge.svg?version=0.1.0)](https://docs.rs/esplora-api/0.1.0/esplora_api/) [![codecov](https://codecov.io/gh/vivienbcr/Blockstream-api-wrapper/branch/master/graph/badge.svg?token=7P0MURXOOO)](undefined)
+[![Actions Status](https://github.com/vivienbcr/Blockstream-api-wrapper/workflows/ci/badge.svg)](https://github.com/vivienbcr/Blockstream-api-wrapper/actions) 
 
 ## Description
 
